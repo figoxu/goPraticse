@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/quexer/utee"
-//	"net/url"
 	"net/url"
 	"fmt"
 )
