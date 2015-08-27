@@ -1,16 +1,14 @@
 package main
+
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
-
-
-func main(){
-	v := fmt.Sprint("hellohowareyou",",1");
+func main() {
+	v := fmt.Sprint("hellohowareyou", ",1")
 	d := []byte(v)
-
 
 	v2 := string(d)
 
@@ -24,6 +22,6 @@ func main(){
 	s := strings.Split("abc,abc", ",")
 	fmt.Println(s, len(s))
 
-	v_int,_ := strconv.Atoi("1024")
+	v_int, _ := strconv.Atoi("1024")
 	fmt.Println(v_int)
 }
