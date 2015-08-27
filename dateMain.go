@@ -32,14 +32,13 @@ func main() {
 	date := baseTime.Add(1722*7*24*time.Hour + 24*time.Hour + 66355*time.Second)
 	fmt.Println(date)
 
-
 	fmt.Println("===================================")
 	total := 100000000
 	day := 60
 
-	piece:= total /day /1000
+	piece := total / day / 1000
 
-	fmt.Println("@piece:",piece)
+	fmt.Println("@piece:", piece)
 
-	fmt.Println(16697*100*60)
+	fmt.Println(16697 * 100 * 60)
 }
