@@ -34,9 +34,6 @@ func main() {
 
 	fmt.Println("@val:" + conf)
 
-
-
-
 	var result map[string]*Connector
 	json.Unmarshal([]byte(conf), &result)
 
