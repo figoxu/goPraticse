@@ -18,4 +18,11 @@ func main(){
 	fvv = append(fvv,"thank")
 	fvv = append(fvv,"you")
 	fmt.Println(fvv)
+
+
+	fv2 := fvv
+	fvv =[]string{}
+
+	fmt.Println("@fv2:",fv2)
+	fmt.Println("@fvv:",fvv)
 }
