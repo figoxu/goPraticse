@@ -5,6 +5,8 @@ import (
 	consistent "stathat.com/c/consistent"
 	"strconv"
 	"strings"
+	"github.com/quexer/utee"
+	"sync"
 )
 const(
 	HASH_BASE_SIZE = 100
@@ -82,6 +84,30 @@ func main() {
 	PrintMap()
 	AddReDispatch("127.0.0.1:6000",1)
 	PrintMap()
+	t :=utee.Tick()
+	for i := 100000; i < 200000; i++ {
+		uuid := strconv.Itoa(i)
+		RouteAndDispatch(uuid)
+	}
+	fmt.Println("route ",100000," spend ",utee.Tick()-t," msec")
+	t =utee.Tick()
+
+
+
+	var wg sync.WaitGroup
+
+	route := func(id string){
+		defer wg.Done()
+		RouteAndDispatch(id )
+	}
+
+	for i := 0; i < 10000000; i++ {
+		uuid := strconv.Itoa(i)
+		wg.Add(1)
+		go route(fmt.Sprint("hello",uuid) )
+	}
+	wg.Wait()
+	fmt.Println("route ",10000000," spend ",utee.Tick()-t," msec")
 }
 
 func AddConnector(id string,weight int) {
