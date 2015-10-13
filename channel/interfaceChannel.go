@@ -49,7 +49,8 @@ func asOpEnque(op OpAs) {
 	select {
 	case g_as_op_q <- op:
 	default:
-		log.Println("[warn] op as basic overstock")
+		log.Println("[warn] op basic overstock")
+		time.Sleep(time.Second*time.Duration(5))
 	}
 }
 
