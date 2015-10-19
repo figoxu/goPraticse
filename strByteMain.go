@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
-	v := fmt.Sprint("hellohowareyou", ",1")
+	v:=strconv.Itoa(1024768)
+	fmt.Println(v)
+	v = fmt.Sprint("hellohowareyou", ",1")
 	d := []byte(v)
 
 	v2 := string(d)
