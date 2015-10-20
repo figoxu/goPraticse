@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"log"
 )
 
 func main() {
+	st := "hello"+"world"
+	log.Println(st)
 	v:=strconv.Itoa(1024768)
 	fmt.Println(v)
 	v = fmt.Sprint("hellohowareyou", ",1")
