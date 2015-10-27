@@ -24,6 +24,17 @@ func main(){
 	m := make(map[string]int)
 
 	m["67"] = m["67"] + 10
+	m["hello"] = 1024
+	fmt.Println("-------------------")
+	fmt.Println(m)
+	fmt.Println("------delete key hello-------------")
+	delete(m,"hello")
+	fmt.Println(m)
+	fmt.Println("-------------------")
+
+	m1 := make(map[string]bool)
+	log.Println("@m1['not exist key'] : ",m1["not exist key"])
+
 	start := utee.Fint("60")
 	end :=utee.Fint("70")
 	for i:=start;i<=end;i++{
