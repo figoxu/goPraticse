@@ -13,6 +13,7 @@ func main(){
 	retry :=0
 	for err != nil && retry<3 {
 		retry ++
+		err = someBusiness()
 		log.Println("no dv stat @retry:",retry)
 	}
 
