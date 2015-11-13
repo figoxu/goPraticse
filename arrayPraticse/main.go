@@ -25,4 +25,6 @@ func main(){
 
 	fmt.Println("@fv2:",fv2)
 	fmt.Println("@fvv:",fvv)
+	a :=[]string{"1","2","3"}
+	fmt.Println("@a:",a)
 }
