@@ -6,6 +6,9 @@ import (
 	"encoding/pem"
 	"crypto/tls"
 	"bytes"
+	"log"
+	"crypto/x509"
+	"crypto/x509/pkix"
 )
 
 func main(){
@@ -36,11 +39,39 @@ func main(){
 	for _, b := range blocks {
 		pem.Encode(buf,b)
 	}
+	log.Println("------------------")
+//	fmt.Println("-- cer buffer is -")
+//	fmt.Println("------------------")
+//	fmt.Println(buf.String())
+//	fmt.Println("------------------")
+	block, _ := pem.Decode([]byte(buf.String()))
+	if block == nil {
+		log.Println("failed to parse certificate PEM")
+	}
+	c, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		log.Println("failed to parse certificate: " + err.Error())
+	}
+	log.Println("------------------")
+	log.Println("@commonName:",c.Subject.CommonName)
+	log.Println("------------------")
+	print(c.Subject)
+	log.Println("------------------")
+	print(c.Issuer)
+}
 
-	fmt.Println("------------------")
-	fmt.Println("-- cer buffer is -")
-	fmt.Println("------------------")
-	fmt.Println(buf.String())
-	fmt.Println("------------------")
-	fmt.Println("hello")
+func print(info pkix.Name){
+	log.Println("@country:",info.Country)
+	log.Println("@Organization:",info.Organization)
+	log.Println("@OrganizationalUnit:",info.OrganizationalUnit)
+	log.Println("@Locality:",info.Locality)
+	log.Println("@Province:",info.Province)
+	log.Println("@StreetAddress:",info.StreetAddress)
+	log.Println("@PostalCode:",info.PostalCode)
+	log.Println("@SerialNumber:",info.SerialNumber)
+	log.Println("@CommonName:",info.CommonName)
+
+
+	log.Println("@Names:",info.Names)
+	log.Println("@ExtraNames:",info.ExtraNames)
 }
