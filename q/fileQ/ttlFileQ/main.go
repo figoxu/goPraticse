@@ -31,6 +31,34 @@ func main() {
 	v, _ = ttlQ.Deq("figo")
 	fmt.Println("time out check @times3:",string(v))
 
+
+
+	st := utee.TickSec()
+	for i:=0 ;i<=10*10000;i++ {
+		dvid := fmt.Sprintf("sysDevice",i)
+		ttlQ.Enq(dvid,[]byte(dvid),60*60*24*7)
+		if i%10000 ==0 {
+			log.Println("10000 enq finish")
+		}
+	}
+	log.Println("10 0000 device enqueue a message ,cost @t:",(utee.TickSec()-st) )
+
+	latch := utee.NewThrottle(10000)
+	st = utee.TickSec()
+	for i:=0 ;i<=10*10000;i++ {
+		dvid := fmt.Sprintf("sysDevice",i)
+		latch.Acquire()
+		exc := func(){
+			defer latch.Release()
+			ttlQ.Enq(dvid,[]byte(dvid),60*60*24*7)
+		}
+		go exc()
+	}
+	log.Println("10 0000 device enqueue a message with gorutime,cost @t:",(utee.TickSec()-st) )
+
+	st = utee.TickSec()
+
+
 }
 
 func NewFTtlQ(basePath, qname string) *FileTtlQ {
@@ -79,7 +107,6 @@ func (p *FileTtlQ) Enq(uid interface{}, data []byte, ttl ...uint32) error {
 	if len(ttl) > 0 {
 		t = utee.TickSec() + int64(ttl[0])
 	}
-	log.Println("enqueue dod @t:",t)
 	qv := QValue{
 		Data: data,
 		Dod:  t,
