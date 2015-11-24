@@ -12,7 +12,7 @@ import (
 	"os"
 	"time"
 )
-
+//todo 替换LRU Cache为，Timer Cache
 func main() {
 	log.Println("hello")
 
@@ -60,20 +60,20 @@ func main() {
 		log.Println("figo queue is close ok")
 	}
 
-	st := utee.TickSec()
-	for i := 0; i <= 10*10000; i++ {
-		dvid := fmt.Sprintf("sysDevice%v", i)
-		ttlQ.Enq(dvid, []byte(dvid), 60*60*24*7)
-		if i%10000 == 0 {
-			log.Println("10000 enq finish")
-		}
-	}
-	log.Println("10 0000 device enqueue a message ,cost @t:", (utee.TickSec() - st))
+//	st := utee.TickSec()
+//	for i := 0; i <= 10*10000; i++ {
+//		dvid := fmt.Sprintf("sysDevice%v", i)
+//		ttlQ.Enq(dvid, []byte(dvid), 60*60*24*7)
+//		if i%10000 == 0 {
+//			log.Println("10000 enq finish")
+//		}
+//	}
+//	log.Println("10 0000 device enqueue a message ,cost @t:", (utee.TickSec() - st))
 
 	latch := utee.NewThrottle(10000)
-	st = utee.TickSec()
+	st := utee.TickSec()
 	for i := 0; i <= 10*10000; i++ {
-		dvid := fmt.Sprintf("sysDevice", i)
+		dvid := fmt.Sprintf("sysDevice %v", i)
 		latch.Acquire()
 		exc := func() {
 			defer latch.Release()
@@ -83,10 +83,11 @@ func main() {
 	}
 	log.Println("10 0000 device enqueue a message with gorutime,cost @t:", (utee.TickSec() - st))
 
-	for k := range ttlQ.qCache.Keys() {
+	for _,k := range ttlQ.qCache.Keys() {
+//		dvid := fmt.Sprintf("sysDevice", k)
 		v, ok := ttlQ.qCache.Get(k)
 		if !ok {
-			log.Println("@k:", k, "  is not ok ")
+			log.Println("@k:", k, "  is not ok @v:",v)
 			continue
 		}
 		if v == nil {
@@ -108,7 +109,7 @@ func NewFTtlQ(basePath, qname string) *FileTtlQ {
 	onEvicted := func(key interface{}, value interface{}) {
 		c <- value.(*qr.Qr)
 	}
-	m, err := glru.NewWithEvict(100000000, onEvicted)
+	m, err := glru.NewWithEvict(1000000, onEvicted)
 	utee.Chk(err)
 	d := fmt.Sprintf("%s/%s/%s", basePath, qname, "ldb")
 	log.Println("dbpath @d:", d)
