@@ -5,75 +5,31 @@ import (
 	"fmt"
 	"github.com/alicebob/qr"
 	"github.com/figoxu/utee"
-	glru "github.com/hashicorp/golang-lru"
 	"github.com/pborman/uuid"
 	"github.com/syndtr/goleveldb/leveldb"
 	"log"
 	"os"
 	"time"
 )
-//todo 替换LRU Cache为，Timer Cache
+//todo 每个文件目录不能超过1000个文件，目录摆放需要规范
 func main() {
 	log.Println("hello")
-
-	q2, _ := qr.New(
-		"/home/figo/data/sampleTtlQ/q/",
-		"sample2",
-		qr.OptionBuffer(1000),
-	)
-	q2.Enqueue("hello")
-	q2.Close()
-
-	q3, _ := qr.New(
-		"/home/figo/data/sampleTtlQ/q/",
-		"sample3",
-		qr.OptionBuffer(1000),
-	)
-	q3.Enqueue("hello")
-
 	ttlQ := NewFTtlQ("/home/figo/data", "sampleTtlQ")
-
-	ttlQ.Enq("test", []byte("hello world"), 30)
-	ttlQ.Enq("test", []byte("hello world"), 30)
-	log.Println("get queue @q:", ttlQ.getQ("test"))
-	ttlQ.getQ("test").Close()
-
-	ttlQ.Enq("figo", []byte("hello world"), 30)
-	v, _ := ttlQ.Deq("figo")
-
-	fmt.Println("@times1:", string(v))
-	v, _ = ttlQ.Deq("figo")
-	fmt.Println("@times2:", string(v))
-	ttlQ.Enq("figo", []byte("hello world"), 30)
-	v, _ = ttlQ.Deq("figo")
-	fmt.Println("@times3:", string(v))
-	ttlQ.Enq("figo", []byte("hello world"), 30)
-//	log.Println("sleep 31 second to use time out")
-//	time.Sleep(time.Second * time.Duration(31))
-	v, _ = ttlQ.Deq("figo")
-	fmt.Println("time out check @times3:", string(v))
-	if fq, ok := ttlQ.qCache.Get("figo"); !ok {
-		log.Println("figo queue is not ok")
-	} else {
-		ttlQ.Enq("figo", []byte("hello world"), 30)
-		fq.(*qr.Qr).Close()
-		log.Println("figo queue is close ok")
-	}
-
-//	st := utee.TickSec()
-//	for i := 0; i <= 10*10000; i++ {
-//		dvid := fmt.Sprintf("sysDevice%v", i)
-//		ttlQ.Enq(dvid, []byte(dvid), 60*60*24*7)
-//		if i%10000 == 0 {
-//			log.Println("10000 enq finish")
-//		}
-//	}
-//	log.Println("10 0000 device enqueue a message ,cost @t:", (utee.TickSec() - st))
-
-	latch := utee.NewThrottle(10000)
 	st := utee.TickSec()
 	for i := 0; i <= 10*10000; i++ {
-		dvid := fmt.Sprintf("sysDevice %v", i)
+		dvid := fmt.Sprintf("sysDevice%v", i)
+		ttlQ.Enq(dvid, []byte(dvid), 60*60*24*7)
+		if i%10000 == 0 {
+			log.Println("10000 enq finish")
+		}
+	}
+	log.Println("10 0000 device enqueue a message ,cost @t:", (utee.TickSec() - st))
+	log.Println("sleep 5 minute,then retry with gorutine")
+	time.Sleep(time.Minute * time.Duration(5))
+	latch := utee.NewThrottle(10000)
+	st = utee.TickSec()
+	for i := 0; i <= 10*10000; i++ {
+		dvid := fmt.Sprintf("sysDevice%v", i)
 		latch.Acquire()
 		exc := func() {
 			defer latch.Release()
@@ -83,14 +39,10 @@ func main() {
 	}
 	log.Println("10 0000 device enqueue a message with gorutime,cost @t:", (utee.TickSec() - st))
 
-	for _,k := range ttlQ.qCache.Keys() {
-//		dvid := fmt.Sprintf("sysDevice", k)
-		v, ok := ttlQ.qCache.Get(k)
-		if !ok {
-			log.Println("@k:", k, "  is not ok @v:",v)
-			continue
-		}
+	for _,k := range ttlQ.timerCache.Keys() {
+		v := ttlQ.timerCache.Get(k)
 		if v == nil {
+			log.Println("@k:", k, "  is not ok @v:",v)
 			continue
 		}
 		ttlQ.shut_q <- v.(*qr.Qr)
@@ -106,20 +58,18 @@ func main() {
 
 func NewFTtlQ(basePath, qname string) *FileTtlQ {
 	c := make(chan *qr.Qr, 1000000)
-	onEvicted := func(key interface{}, value interface{}) {
-		c <- value.(*qr.Qr)
-	}
-	m, err := glru.NewWithEvict(1000000, onEvicted)
-	utee.Chk(err)
+	timerCache := utee.NewTimerCache(60, func(k, v interface{}) {
+		c <- v.(*qr.Qr)
+	})
 	d := fmt.Sprintf("%s/%s/%s", basePath, qname, "ldb")
-	log.Println("dbpath @d:", d)
-	err = os.MkdirAll(d, 0777)
+	log.Println("start @dbpath:", d)
+	err := os.MkdirAll(d, 0777)
 	utee.Chk(err)
 	db, err := leveldb.OpenFile(d, nil)
 	utee.Chk(err)
 	q := &FileTtlQ{
 		Ldb:      db,
-		qCache:   m,
+		timerCache:   timerCache,
 		basePath: basePath,
 		qname:    qname,
 		shut_q:   c,
@@ -128,7 +78,7 @@ func NewFTtlQ(basePath, qname string) *FileTtlQ {
 	closeQ := func(fq *qr.Qr){
 		defer func() {
 			if err := recover(); err != nil {
-				log.Println(err, " (recover)")
+				log.Println(err, " (recover) @fq:",fq)
 			}
 		}()
 		fq.Close()
@@ -144,17 +94,15 @@ func NewFTtlQ(basePath, qname string) *FileTtlQ {
 
 type FileTtlQ struct {
 	Ldb      *leveldb.DB
-	qCache   *glru.Cache
-	basePath string
+	timerCache   *utee.TimerCache
+basePath string
 	qname    string
 	shut_q   chan *qr.Qr
 }
 
-//g_as_basic_q            = make(chan *OpAsBasic, MAX_OPQ_AS_BASIC)
-
 func (p *FileTtlQ) getQ(uid interface{}) *qr.Qr {
-	v, ok := p.qCache.Get(uid)
-	if !ok {
+	v := p.timerCache.Get(uid)
+	if v == nil {
 		d := fmt.Sprintf("%s/%s/q/", p.basePath, p.qname)
 		err := os.MkdirAll(d, 0777)
 		utee.Chk(err)
@@ -164,7 +112,7 @@ func (p *FileTtlQ) getQ(uid interface{}) *qr.Qr {
 			qr.OptionBuffer(1000),
 		)
 		utee.Chk(err)
-		p.qCache.Add(uid, q)
+		p.timerCache.Put(uid, q)
 		return q
 	}
 	q := v.(*qr.Qr)
