@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/hex"
 	"fmt"
 	"github.com/alicebob/qr"
 	"github.com/figoxu/utee"
@@ -10,45 +11,40 @@ import (
 	"log"
 	"os"
 	"time"
+	"sync"
 )
-//todo 每个文件目录不能超过1000个文件，目录摆放需要规范
+//todo 每个文件目录不能超过1000个文件，目录摆放需要规范  分成多级的 1000整除的目录,一个文件夹，不能超过1000 个文件
 func main() {
 	log.Println("hello")
 	ttlQ := NewFTtlQ("/home/figo/data", "sampleTtlQ")
 	st := utee.TickSec()
-	for i := 0; i <= 10*10000; i++ {
+	for i := 0; i <= 100*10000; i++ {
 		dvid := fmt.Sprintf("sysDevice%v", i)
 		ttlQ.Enq(dvid, []byte(dvid), 60*60*24*7)
-		if i%10000 == 0 {
+		if i%10000 == 0 && i>0 {
 			log.Println("10000 enq finish")
 		}
 	}
 	log.Println("10 0000 device enqueue a message ,cost @t:", (utee.TickSec() - st))
-	log.Println("sleep 5 minute,then retry with gorutine")
-	time.Sleep(time.Minute * time.Duration(5))
-	latch := utee.NewThrottle(10000)
+	log.Println("sleep 1.2 minute,then retry with gorutine")
+	ttlQ.hibernateAll()
+	time.Sleep(time.Second * time.Duration(70))
+	var wg sync.WaitGroup
 	st = utee.TickSec()
-	for i := 0; i <= 10*10000; i++ {
+	for i := 0; i <= 100*10000; i++ {
 		dvid := fmt.Sprintf("sysDevice%v", i)
-		latch.Acquire()
+		wg.Add(1)
 		exc := func() {
-			defer latch.Release()
+			defer wg.Done()
 			ttlQ.Enq(dvid, []byte(dvid), 60*60*24*7)
 		}
 		go exc()
 	}
-	log.Println("10 0000 device enqueue a message with gorutime,cost @t:", (utee.TickSec() - st))
-
-	for _,k := range ttlQ.timerCache.Keys() {
-		v := ttlQ.timerCache.Get(k)
-		if v == nil {
-			log.Println("@k:", k, "  is not ok @v:",v)
-			continue
-		}
-		ttlQ.shut_q <- v.(*qr.Qr)
-	}
+	wg.Wait()
+	log.Println("100 0000 device enqueue a message with gorutime,cost @t:", (utee.TickSec() - st))
+	ttlQ.hibernateAll()
 	log.Println("shut down all queue")
-	time.Sleep(time.Second * time.Duration(5))
+	time.Sleep(time.Second * time.Duration(10))
 	for len(ttlQ.shut_q) > 0 {
 		time.Sleep(time.Second * time.Duration(1))
 	}
@@ -95,20 +91,28 @@ func NewFTtlQ(basePath, qname string) *FileTtlQ {
 type FileTtlQ struct {
 	Ldb      *leveldb.DB
 	timerCache   *utee.TimerCache
-basePath string
+	basePath string
 	qname    string
 	shut_q   chan *qr.Qr
 }
 
+func getOkDir(s string) string{
+	v := hex.EncodeToString(utee.Md5([]byte(s)))
+	v = v[8:24]  //16位md5
+	d := fmt.Sprint(v[0:2],"/",v[2:4],"/",v[4:6],"/",v[6:8],"/",v[8:10],"/",v[10:12],"/",v[12:14])
+	return d
+}
+
 func (p *FileTtlQ) getQ(uid interface{}) *qr.Qr {
+	qn:=p.parseQName(uid)
 	v := p.timerCache.Get(uid)
 	if v == nil {
-		d := fmt.Sprintf("%s/%s/q/", p.basePath, p.qname)
+		d := fmt.Sprintf("%s/%s/q/%s", p.basePath, p.qname,getOkDir(qn))
 		err := os.MkdirAll(d, 0777)
 		utee.Chk(err)
 		q, err := qr.New(
 			d,
-			p.parseQName(uid),
+			qn,
 			qr.OptionBuffer(1000),
 		)
 		utee.Chk(err)
@@ -118,6 +122,18 @@ func (p *FileTtlQ) getQ(uid interface{}) *qr.Qr {
 	q := v.(*qr.Qr)
 	return q
 }
+func (p *FileTtlQ) hibernateAll()  {
+	for _,k := range p.timerCache.Keys() {
+		v := p.timerCache.Get(k)
+		if v == nil {
+			log.Println("@k:", k, "  is not ok @v:",v)
+			continue
+		}
+		p.shut_q <- v.(*qr.Qr)
+		p.timerCache.Remove(k)
+	}
+}
+
 func (p *FileTtlQ) parseQName(uid interface{}) string {
 	return fmt.Sprintf("q_%v", uid)
 }
