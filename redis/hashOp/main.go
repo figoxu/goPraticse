@@ -12,16 +12,17 @@ func main() {
 	REDIS_SERVER := "127.0.0.1:6379"
 	REDIS_PASSWD := ""
 	pool := createPool(REDIS_SERVER, REDIS_PASSWD)
-	k:="testP"
+	k := "testP"
 	saveHash(pool, k)
-	incHash(pool,k,100,22,44)
-	log.Println( getHash(pool,k))
-	incHash(pool,k,100,22,44)
-	log.Println( getHash(pool,k))
-	incHash(pool,k,100,22,44)
-	log.Println( getHash(pool,k))
-	incHash(pool,k,100,22,44)
-	log.Println( getHash(pool,k))
+	incHash(pool, k, 100, 22, 44)
+	log.Println(getHash(pool, k))
+	incHash(pool, k, 100, 22, 44)
+	log.Println(getHash(pool, k))
+	incHash(pool, k, 100, 22, 44)
+	saveHash(pool, k)
+	log.Println(getHash(pool, k))
+	incHash(pool, k, 100, 22, 44)
+	log.Println(getHash(pool, k))
 }
 
 func saveHash(pool *redis.Pool, id string) {
@@ -34,25 +35,26 @@ func saveHash(pool *redis.Pool, id string) {
 		log.Println("already exist")
 		return
 	}
-	_,err=c.Do("HMSET",id,"total",0,"read",0,"send",0)
+	_, err = c.Do("HMSET", id, "total", 0, "read", 0, "send", 0)
 	utee.Chk(err)
+	c.Do("TTL", id, 60*60*2)
 }
 
 func incHash(pool *redis.Pool, id string, total, read, sent int) {
 	c := pool.Get()
 	defer c.Close()
-	_,err:=c.Do("HINCRBY",id,"total",total)
+	_, err := c.Do("HINCRBY", id, "total", total)
 	utee.Chk(err)
-	_,err=c.Do("HINCRBY",id,"read",read)
+	_, err = c.Do("HINCRBY", id, "read", read)
 	utee.Chk(err)
-	_,err=c.Do("HINCRBY",id,"sent",sent)
+	_, err = c.Do("HINCRBY", id, "sent", sent)
 	utee.Chk(err)
 }
 
-func getHash(pool *redis.Pool, id string) map[string]int{
+func getHash(pool *redis.Pool, id string) map[string]int {
 	c := pool.Get()
 	defer c.Close()
-	m,err:=redis.IntMap(c.Do("HGETALL",id))
+	m, err := redis.IntMap(c.Do("HGETALL", id))
 	utee.Chk(err)
 	return m
 }
