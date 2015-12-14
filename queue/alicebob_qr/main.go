@@ -1,7 +1,7 @@
 package main
 import (
 	"github.com/alicebob/qr"
-	"fmt"
+	"time"
 )
 
 
@@ -16,13 +16,11 @@ func main(){
 		panic(err)
 	}
 	defer q.Close()
-	go func() {
-		for e := range q.Dequeue() {
-			fmt.Printf("We got: %v\n", e)
-		}
-	}()
+//	go func() {
+//		for e := range q.Dequeue() {
+//			fmt.Printf("We got: %v\n", e)
+//		}
+//	}()
 
-	// elsewhere:
-	q.Enqueue("aap")
-	q.Enqueue("noot")
+	time.Sleep(time.Duration(time.Minute*2))
 }
