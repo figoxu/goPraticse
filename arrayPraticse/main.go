@@ -1,5 +1,8 @@
 package main
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 
 func main(){
@@ -17,7 +20,7 @@ func main(){
 	fvv = append(fvv,"fine")
 	fvv = append(fvv,"thank")
 	fvv = append(fvv,"you")
-	fmt.Println(fvv)
+	log.Println(fvv)
 
 
 	fv2 := fvv
@@ -26,5 +29,6 @@ func main(){
 	fmt.Println("@fv2:",fv2)
 	fmt.Println("@fvv:",fvv)
 	a :=[]string{"1","2","3"}
-	fmt.Println("@a:",a)
+	log.Println("@a:",a)
+	log.Println(a[0])
 }

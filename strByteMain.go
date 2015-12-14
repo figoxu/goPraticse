@@ -29,4 +29,5 @@ func main() {
 
 	v_int, _ := strconv.Atoi("1024")
 	fmt.Println(v_int)
+
 }
