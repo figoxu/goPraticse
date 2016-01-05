@@ -40,4 +40,25 @@ func main(){
 		Value: 100,
 	})
 	log.Println(string(b))
+
+	log.Println("----step 2--------")
+	type R2 struct {
+		Name string `json:"name,omitempty"`
+		Age  int `json:"age,omitempty"`
+		Young bool `json:"young,omitempty"`
+	}
+	v0 := R2{}
+	b,_= json.Marshal(&v0)
+	log.Println(string(b))
+	v0.Age = 0
+	v0.Young = false
+	b,_= json.Marshal(&v0)
+	log.Println(string(b))
+	 m   :=  map[string]interface{}{}
+	m["pl"]=v0
+	m["hello"]="world"
+	b,_= json.Marshal(&m)
+	log.Println(string(b))
+
+
 }
