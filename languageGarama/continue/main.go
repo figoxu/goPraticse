@@ -1,6 +1,5 @@
 package main
 import (
-	"fmt"
 	"log"
 )
 
@@ -12,6 +11,15 @@ func main(){
 		if i%2==0 {
 			continue lb
 		}
-		fmt.Println(i)
+		log.Println(i)
 	}
+	log.Println("---------------------------")
+	for i:=0;i<=100;i++{
+		if i%2==1 {
+			continue
+		}
+		log.Println(i)
+	}
+
+
 }
