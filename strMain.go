@@ -10,6 +10,13 @@ import (
 )
 
 func main(){
+	var v int
+	v =0
+	log.Println("..........001")
+	log.Println(v)
+	v = nil
+	log.Println("..........002")
+	log.Println(v)
 	for i:=0;i<5;i++{
 		fmt.Println(i)
 	}
