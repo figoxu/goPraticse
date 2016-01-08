@@ -20,6 +20,11 @@ func main(){
 		}
 		log.Println(i)
 	}
-
-
+	log.Println("#####################")
+	for i:=0;i<=100;i++{
+		if i>=20 {
+			break
+		}
+		log.Println("@index:",i)
+	}
 }
