@@ -11,11 +11,6 @@ import (
 
 func main(){
 	var v int
-	v =0
-	log.Println("..........001")
-	log.Println(v)
-	v = nil
-	log.Println("..........002")
 	log.Println(v)
 	for i:=0;i<5;i++{
 		fmt.Println(i)
@@ -33,20 +28,20 @@ func main(){
 	}
 
 
-	fmt.Println(strings.ToUpper("hello world"))
+	log.Println(strings.ToUpper("hello world"))
 	a:=[]string{"hello","world"}
 	for i,v := range a{
-		fmt.Println("@i:",i," @v:",v)
+		log.Println("@i:",i," @v:",v)
 	}
 	va :="hi"
 	if va=="hi" {
-		fmt.Println("equals is ==")
+		log.Println("equals is ==")
 	}
 
 
 	s := "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8YmlzUmVzcG9uc2VEVE8+CiAgICA8cmVzcENvZGU+MTAzMDwvcmVzcENvZGU+CiAgICA8cmVzcEluZm8+5pWw5a2X562+5ZCN6ZSZ6K+vPC9yZXNwSW5mbz4KICAgIDxyZXNwVGltZT4xNDQ3MzgyMDU5NjEyPC9yZXNwVGltZT4KPC9iaXNSZXNwb25zZURUTz4K"
 	b,e := base64.StdEncoding.DecodeString(s)
-	fmt.Println("@e:",e,"@v:",string(b))
+	log.Println("@e:",e,"@v:",string(b))
 	 vs := strconv.Itoa(1024)
 	log.Println(vs)
 	vi,_:=strconv.Atoi(vs)
@@ -56,4 +51,9 @@ func main(){
 	mt,err :=strconv.ParseInt("1429345203123",10,64)
 	log.Println("@mt:",mt,"@err:",err," @len:",len("testValueIs"))
 	log.Println(len("this_is_a_very_long_string__we_just_test_skip_func_is_usefull_does_it_usefull_yes_it_is"))
+
+
+
+	ar := strings.Split("hello,world,how,cool,me",",")
+	log.Println("@len:",len(ar))
 }
