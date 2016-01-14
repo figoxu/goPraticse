@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
-	"log"
 )
 
 func main() {
-	st := "hello"+"world"
+	st := "hello" + "world"
 	log.Println(st)
-	v:=strconv.Itoa(1024768)
+	v := strconv.Itoa(1024768)
 	fmt.Println(v)
 	v = fmt.Sprint("hellohowareyou", ",1")
 	d := []byte(v)

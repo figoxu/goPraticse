@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -43,10 +43,8 @@ func main() {
 
 	fmt.Println(16697 * 100 * 60)
 
+	t := time.Unix(0, 1428176922119*1e6)
 
-
-	t := time.Unix(0,1428176922119*1e6)
-
-	v,_ := strconv.Atoi(t.Format("20060102"))
-	fmt.Println("@v:",v)
+	v, _ := strconv.Atoi(t.Format("20060102"))
+	fmt.Println("@v:", v)
 }
