@@ -52,4 +52,17 @@ func main() {
 
 	ar := strings.Split("hello,world,how,cool,me", ",")
 	log.Println("@len:", len(ar))
+
+
+	s = `
+		this
+		is
+		a
+		hello
+		world
+	`
+	log.Println(s)
+	log.Println(strings.Replace(s,"\n"," ",-1))
+	log.Println(s)
+
 }
