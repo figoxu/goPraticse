@@ -6,6 +6,12 @@ import (
 )
 
 func main(){
+	log.Println("-----")
+	log.Println(0x01)
+	log.Printf("%0b \n",0x01<<32)
+	log.Println("-----")
+
+
 	bmap := bitmap.NewBitmapSize(7)
 
 	origal := [5]uint64{4,6,3,1,7}
@@ -28,5 +34,5 @@ func main(){
 	if expected != actual {
 		log.Println("error")
 	}
-	log.Println(bmap.GetBit( 1024 ))
+	log.Println(bmap)
 }
