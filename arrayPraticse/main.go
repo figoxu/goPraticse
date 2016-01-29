@@ -22,6 +22,13 @@ func main(){
 	fvv = append(fvv,"you")
 	log.Println(fvv)
 
+	for i, id := range fvv {
+		log.Println("@id:",id)
+		if i == len(fvv)-1 {
+			log.Println(" --> end")
+		}
+	}
+	log.Println("----------------------------")
 
 	fv2 := fvv
 	fvv =[]string{}
