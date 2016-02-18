@@ -2,15 +2,18 @@ package main
 
 import (
 	"crypto/tls"
+	"fmt"
 	"github.com/go-martini/martini"
 	"log"
 	"net/http"
+	"net/url"
 	"time"
 )
 
 func main() {
 	m := martini.Classic()
-	m.Get("/hello", helloHandler)
+	m.Get("/helloGet", getHandler("Get"))
+	m.Post("/helloPost", getHandler("Post"))
 	http.Handle("/", m)
 	log.Printf("About to listen on 10443. Go to https://127.0.0.1:10443/")
 	go h1Test()
@@ -21,19 +24,24 @@ func main() {
 	}
 }
 
-func helloHandler() (int, string) {
-	log.Println("invoke")
-
-	return 200, "hello"
+func getHandler(val string) func() (int, string) {
+	return func() (int, string) {
+		return 200, fmt.Sprint("hello", val)
+	}
 }
 
 func h1Test() {
 	time.Sleep(time.Second * time.Duration(2))
 	log.Println("h1 invoke sample")
-	if rsp, err := http.Get("https://127.0.0.1:10443/hello"); err != nil {
-		log.Println("@err:", err)
+	if rsp, err := http.Get("https://127.0.0.1:10443/helloGet"); err != nil {
+		log.Println("h1 get @err:", err)
 	} else {
-		log.Println("@rsp:", rsp)
+		log.Println("h1 get @rsp:", rsp)
+	}
+	if rsp, err := http.PostForm("https://127.0.0.1:10443/helloPost", url.Values{}); err != nil {
+		log.Println("h1 post @err:", err)
+	} else {
+		log.Println("h1 post @rsp:", rsp)
 	}
 }
 
@@ -45,9 +53,15 @@ func h2Test() {
 		DisableCompression: true,
 	}
 	client := &http.Client{Transport: tr}
-	if rsp, err := client.Get("https://127.0.0.1:10443/hello"); err != nil {
-		log.Println("@err:", err)
+	if rsp, err := client.Get("https://127.0.0.1:10443/helloGet"); err != nil {
+		log.Println("h2 get @err:", err)
 	} else {
-		log.Println("@rsp:", rsp)
+		log.Println("h2 get @rsp:", rsp)
 	}
+	if rsp, err := client.PostForm("https://127.0.0.1:10443/helloPost", url.Values{}); err != nil {
+		log.Println("h2 post @err:", err)
+	} else {
+		log.Println("h2 post @rsp:", rsp)
+	}
+
 }
