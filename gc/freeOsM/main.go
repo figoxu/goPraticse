@@ -7,6 +7,7 @@ import (
 	_ "expvar"
 	_ "net/http/pprof"
 	"net/http"
+	"runtime/debug"
 )
 
 //go tool pprof -alloc_space http://localhost:6666/debug/pprof/heap
@@ -28,6 +29,7 @@ func makeMem() {
 		wg.Wait()
 		c++
 		log.Println("execute @c:", c)
+		debug.FreeOSMemory()
 	}
 }
 
