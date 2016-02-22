@@ -1,13 +1,13 @@
 package main
 
 import (
+	_ "expvar"
 	"fmt"
 	"log"
-	"sync"
-	_ "expvar"
-	_ "net/http/pprof"
 	"net/http"
+	_ "net/http/pprof"
 	"runtime/debug"
+	"sync"
 )
 
 //go tool pprof -alloc_space http://localhost:6666/debug/pprof/heap
