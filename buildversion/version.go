@@ -1,3 +1,13 @@
 package main
 
-var Version = "No Version Provided"
+import (
+	"log"
+)
+
+var (
+	Version string
+)
+
+func init() {
+	log.Println(Version)
+}

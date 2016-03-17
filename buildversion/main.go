@@ -2,7 +2,6 @@ package main
 
 import "fmt"
 
-
 func main() {
-	fmt.Printf("App Version: %s\n", Version)
+	fmt.Println("main start up")
 }
