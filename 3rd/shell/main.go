@@ -2,16 +2,18 @@ package main
 
 import (
 	"bytes"
+	"github.com/codeskyblue/go-sh"
 	"github.com/figoxu/utee"
 	"log"
 	"os/exec" //这个包是主要用来调用cmd命令
-	"github.com/codeskyblue/go-sh"
 )
 
 func main() {
 	log.Println(system("who "))
 	log.Println(system("ps -ef "))
-	err:=sh.Command("ping","127.0.0.1").Run()
+	b, err := sh.Command("netstat", "-antpl").Output()
+	log.Println(string(b))
+	err = sh.Command("ping", "127.0.0.1").Run()
 	utee.Chk(err)
 }
 
@@ -24,4 +26,3 @@ func system(s string) string {
 	utee.Chk(err)
 	return out.String() //输出执行结果
 }
-
