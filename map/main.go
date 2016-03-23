@@ -14,7 +14,7 @@ func main(){
 		log.Printf("k=%v, v=%v\n", k, v)
 	}
 	log.Println("---------------")
-	for v := range m {
-		log.Println(v)
+	for k := range m {
+		log.Println(k)
 	}
 }
