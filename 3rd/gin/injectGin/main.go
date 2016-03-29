@@ -21,6 +21,10 @@ func main() {
 			log.Println(v)
 		}
 	})
+	api.GET("/dummy4/:val", func(c *gin.Context) {
+		v:=c.Params.ByName("val")
+		log.Println("@val:",v)
+	})
 	api.Run(":5000")
 }
 
