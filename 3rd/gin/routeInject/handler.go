@@ -1,23 +1,23 @@
 package main
+
 import (
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
-
-
-func A1MiddleWare(c *gin.Context){
+func A1MiddleWare(c *gin.Context) {
 	obj := &InjectObj{
-		val : "cool u,handsome me",
+		val: "cool u,handsome me",
 	}
-	c.Set("iObj",obj)
+	c.Set("iObj", obj)
 	log.Println(" before  next ")
-	c.Next()
+//	c.Next()
+	ginNext(c)
 	log.Println(" after  next ")
 
 }
 
-func A2MiddleWare(c *gin.Context){
+func A2MiddleWare(c *gin.Context) {
 	obj, ok := c.Keys["iObj"].(*InjectObj)
 	if !ok {
 		log.Panic(" inject error ")
@@ -25,21 +25,23 @@ func A2MiddleWare(c *gin.Context){
 	obj.Println()
 }
 
-func AHanlder(c *gin.Context){
+func AHanlder(c *gin.Context) {
 	log.Println("....AHandler invoke....")
+	c.String(200,"a handler invoke")
 }
 
-func BMiddleWare(c *gin.Context){
+func BMiddleWare(c *gin.Context) {
 	obj := &InjectObj{
-		val : "i am rocker Mr'B",
+		val: "i am rocker Mr'B",
 	}
-	c.Set("iObj",obj)
+	c.Set("iObj", obj)
 }
 
-func BHandler(c *gin.Context){
+func BHandler(c *gin.Context) {
 	obj, ok := c.Keys["iObj"].(*InjectObj)
 	if !ok {
 		log.Panic(" inject error ")
 	}
 	obj.Println()
+	c.String(200,"b handler invoke")
 }
