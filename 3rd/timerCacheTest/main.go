@@ -10,8 +10,8 @@ import (
 	"fmt"
 )
 
-var cache = utee.NewTimerCache(2*60, func(k,v interface{}){
-	log.Println("time out @k:",k," @v:",v)
+var cache = utee.NewTimerCache(1*30, func(k,v interface{}){
+//	log.Println("time out @k:",k," @v:",v)
 })
 
 func main(){
@@ -27,7 +27,7 @@ func initCron() {
 		runRec(func(){
 			log.Println("task invoked")
 			k:= fmt.Sprintf("mk%v", uuid.NewUUID())
-			for i:=0;i<10000;i++{
+			for i:=0;i<10000*50;i++{
 				cache.Put(fmt.Sprintf(k,i),i)
 			}
 
