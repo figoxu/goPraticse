@@ -6,6 +6,12 @@ import (
 	"io"
 )
 func main() {
+
+	var a int64
+	a=255
+	b := uint8(a)
+	log.Println(b)
+	log.Println(".............")
 	s := zipByGzip("5660ad8f4012a5f0867622024550165")
 	log.Println(s)
 	revert(s)
