@@ -1,0 +1,1 @@
+./serviceReg -p=:10002
