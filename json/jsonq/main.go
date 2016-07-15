@@ -91,7 +91,7 @@ const (
         "msgSign": "1214"
       }
     }
-  }]`
+  },{"test":"cool"}]`
 )
 
 func main() {
@@ -132,6 +132,10 @@ func main() {
 	msgSign, err := jq.String("items", "0", "action", "data", "msgSign")
 	utee.Chk(err)
 	log.Println("@msgSign:", msgSign)
+
+	arr, err := jq.Array("items")
+	utee.Chk(err)
+	log.Println("len of arr is :", len(arr))
 }
 
 func wrapAsArray(jsonTxt string) string {
