@@ -92,13 +92,350 @@ const (
       }
     }
   },{"test":"cool"}]`
+
+	tokenMsg = `[
+
+  {
+
+    "device" : {
+
+      "softwareConfig" : {
+
+        "jailBroken" : false,
+
+        "is24HourTime" : false,
+
+        "osVersionCode" : "9.3.2",
+
+        "adidEnabled" : true,
+
+        "locale" : "zh_CN",
+
+        "os" : "iPhone OS",
+
+        "osVersionName" : "9.3.2",
+
+        "deviceName" : "Robin’s iPhone",
+
+        "locationEnabled" : false,
+
+        "language" : "zh-Hans-CN",
+
+        "keyboards" : [
+
+          "zh_Hans-Pinyin@sw=Pinyin-Simplified",
+
+          "zh_Hans-Pinyin@sw=Pinyin10-Simplified",
+
+          "emoji",
+
+          "en_US"
+
+        ],
+
+        "timezone" : "Asia\/Shanghai",
+
+        "timezoneInt" : 8
+
+      },
+
+      "hardwareConfig" : {
+
+        "pixel" : "1242*2208",
+
+        "brand" : "Apple",
+
+        "model" : "iPhone7,1",
+
+        "manufacture" : "Apple Inc.",
+
+        "totalDiskSpace" : 59584425984
+
+      },
+
+      "deviceId" : {
+
+        "tid" : "h33fb2863e9f582f28596aed0a7c89a57",
+
+        "wifiMacs" : [
+
+
+
+        ],
+
+        "adId" : "EAC8E04A-CF96-46EC-B239-0653DEE516E8",
+
+        "vendorId" : "2B8D65B8-5A3E-40A9-9216-FCDA1241ABD0"
+
+      },
+
+      "runtimeConfig" : {
+
+        "activeTime" : 787302,
+
+        "freeDiskSpace" : 46702178304,
+
+        "batteryLevel" : 0.9900000095367432,
+
+        "batteryState" : 2,
+
+        "bootTime" : 0
+
+      }
+
+    },
+
+    "emulator" : false,
+
+    "action" : {
+
+      "name" : "deviceToken",
+
+      "data" : {
+
+        "channel" : "tdios",
+
+        "deviceToken" : {
+
+          "dt" : "ad1184d00a0e99099c0a71abc6b588521fef910fd503bcab08e21aa05984fd75"
+
+        },
+
+        "certType" : 1
+
+      },
+
+      "domain" : "push"
+
+    },
+
+    "app" : {
+
+      "installTime" : 1468311764000,
+
+      "name" : "Demo",
+
+      "purchaseTime" : 0,
+
+      "uniqueId" : "com.TalkingData.Demo",
+
+      "packageType" : "APPL",
+
+      "versionName" : "TD.Demo",
+
+      "globalId" : "",
+
+      "versionCode" : "1.0",
+
+      "cracked" : false,
+
+      "appKey" : [
+
+        {
+
+          "service" : "app",
+
+          "appKey" : "916D4127FA40181B8F2EBC3148EC686F"
+
+        }
+
+      ],
+
+      "displayName" : "TD.Demo",
+
+      "updateTime" : 1468311764000
+
+    },
+
+    "ts" : 1468312147994,
+
+    "fingerprint" : "4b54d2a0354148396f4f845528eeca64",
+
+    "locations" : [
+
+      {
+
+        "lng" : 0,
+
+        "lat" : 0,
+
+        "ts" : 0,
+
+        "unit" : "d"
+
+      }
+
+    ],
+
+    "version" : "1.2",
+
+    "networks" : [
+
+      {
+
+        "current" : [
+
+          {
+
+            "hidden" : false,
+
+            "mac" : "58:69:6c:35:1c:a9",
+
+            "id" : "6:69:6c:4f:7a:d0",
+
+            "ts" : 0,
+
+            "level" : 0,
+
+            "freq" : 0,
+
+            "name" : "TData-Guest"
+
+          }
+
+        ],
+
+        "available" : true,
+
+        "connected" : true,
+
+        "gateway" : "172.30.100.1",
+
+        "type" : "WIFI",
+
+        "hasProxy" : false,
+
+        "ip" : ""
+
+      },
+
+      {
+
+        "hasProxy" : false,
+
+        "current" : [
+
+          {
+
+            "mcc" : "460",
+
+            "systemId" : 0,
+
+            "mnc" : "01",
+
+            "networkId" : 0,
+
+            "asuLevel" : 0,
+
+            "operator" : "中国联通",
+
+            "bastationId" : 0,
+
+            "type" : "WCDMA"
+
+          }
+
+        ],
+
+        "type" : "cellular",
+
+        "available" : false,
+
+        "connected" : false
+
+      }
+
+    ],
+
+    "sdk" : {
+
+      "build" : 3,
+
+      "minorVersion" : 1,
+
+      "platform" : "iOS",
+
+      "version" : 1
+
+    },
+
+    "appContext" : {
+
+
+
+    }
+
+  }
+
+]`
+
+	androidTokenMsg = `
+  [{
+    "sdk": {
+      "minorVersion": 0,
+      "build": 0,
+      "platform": "Android",
+      "version": 1.2
+    },
+    "appContext": {
+      "account": {
+        "accountId": "-1"
+      },
+      "push": [
+        {"3rdAppId":"2ABD1A108697BD992CFD1AF115FC669B","channel":"nick","dt":"3513034472c990179016cba46a6c8b83e"}
+        ,{"3rdAppId":"2ABD1A108697BD992CFD1AF115FC669B","channel":"nick","dt":"3513034472c990179016cba46a6c8b83e"}
+        ,{"3rdAppId":"2ABD1A108697BD992CFD1AF115FC669B","channel":"nick","dt":"3513034472c990179016cba46a6c8b83e"}
+
+      ]
+    }
+  }]`
+
+
+  iMsgPack = `{"aps":{"alert":"asdfadsf","sound":"","badge":-1},"sign":"578d9545a76af4385026e5f8","keyvalue":null,"ex":null}`
+  aMsgPack = `{"type":1,"sign":"20","msg":{"title":{"fontSize":0,"fontBold":false,"fontItalic":false,"fontLineThrough":false,"val":"csdcs"},"content":{"fontSize":0,"fontBold":false,"fontItalic":false,"fontLineThrough":false,"val":"cvscsdc"},"config":{"sound":0,"vibrate":0,"clearable":1,"soundName":""}}}`
+
+  samplePack = `    {
+    "appContext": {
+      "account": {
+        "accountId": "-1"
+      },
+      "push": "[{\"3rdAppId\":\"565580E536FA9A995E039D335C3C4F0D\",\"channel\":\"nick\",\"dt\":\"32e5913bf510c7452be219dbe11b468f1\"}]"
+    }
+  }
+    `
+
 )
 
 func main() {
-	data := map[string]interface{}{}
-	dec := json.NewDecoder(strings.NewReader(jsonstring))
+
+  data := map[string]interface{}{}
+  dec := json.NewDecoder(strings.NewReader(iMsgPack))
+  dec.Decode(&data)
+  jq := jsonq.NewQuery(data)
+   obj, err := jq.Object();
+  utee.Chk(err)
+  log.Println("format1:",obj," @len:",len(obj))
+
+  data = map[string]interface{}{}
+  dec = json.NewDecoder(strings.NewReader(aMsgPack))
+  dec.Decode(&data)
+  jq = jsonq.NewQuery(data)
+  obj, err = jq.Object();
+  utee.Chk(err)
+  log.Println("format2:",obj," @len:",len(obj))
+
+  data = map[string]interface{}{}
+  dec = json.NewDecoder(strings.NewReader("asdfasdf{figo hello"))
+  dec.Decode(&data)
+  jq = jsonq.NewQuery(data)
+  obj, err = jq.Object();
+  utee.Chk(err)
+  log.Println("format3:",obj," @len:",len(obj))
+
+	data = map[string]interface{}{}
+	dec = json.NewDecoder(strings.NewReader(jsonstring))
 	dec.Decode(&data)
-	jq := jsonq.NewQuery(data)
+	jq = jsonq.NewQuery(data)
 
 	// data["foo"] -> 1
 	i, err := jq.Int("foo")
@@ -112,7 +449,7 @@ func main() {
 	log.Println("data['subobj']['subarray']['array'][0] -> 'hello' ", s)
 
 	// data["subobj"] -> map[string]interface{}{"subobj": ...}
-	obj, err := jq.Object("subobj")
+	obj, err = jq.Object("subobj")
 	utee.Chk(err)
 	log.Println("jq.Object('subobj') : ", obj)
 
@@ -136,6 +473,69 @@ func main() {
 	arr, err := jq.Array("items")
 	utee.Chk(err)
 	log.Println("len of arr is :", len(arr))
+
+	jsb := wrapAsArray(tokenMsg)
+	data3 := map[string]interface{}{}
+
+	dec = json.NewDecoder(strings.NewReader(jsb))
+	dec.Decode(&data3)
+	jq = jsonq.NewQuery(data3)
+
+	aName, err := jq.String("items", "0", "action", "name")
+	utee.Chk(err)
+	log.Println("@aName:", aName)
+
+	certType, err := jq.Int("items", "0", "action", "data", "certType")
+	utee.Chk(err)
+
+	log.Println("@cerType:", certType)
+	token, err := jq.String("items", "0", "action", "data", "deviceToken", "dt")
+	utee.Chk(err)
+	log.Println("@token:", token)
+
+	tid, err := jq.String("items", "0", "device", "deviceId", "tid")
+	utee.Chk(err)
+	log.Println("@tid:", tid)
+	jsb = wrapAsArray(androidTokenMsg)
+	dec = json.NewDecoder(strings.NewReader(jsb))
+	dec.Decode(&data3)
+	jq = jsonq.NewQuery(data3)
+
+	arr2, err := jq.ArrayOfObjects("items", "0", "appContext", "push")
+	utee.Chk(err)
+	for _, v := range arr2 {
+		log.Println(" @v:", v)
+		for kk, vv := range v {
+			log.Println("\t\t @k:", kk, " @vv:", vv)
+		}
+	}
+
+
+
+  d2:= map[string]interface{}{}
+  dec = json.NewDecoder(strings.NewReader(samplePack))
+  dec.Decode(&d2)
+  jq = jsonq.NewQuery(d2)
+  s,err=jq.String("appContext","push")
+  utee.Chk(err)
+  log.Println("@s:",s)
+
+  dec = json.NewDecoder(strings.NewReader( wrapAsArray(s) ))
+  dec.Decode(&d2)
+  jq = jsonq.NewQuery(d2)
+  dataMap,err := jq.Object("items","0")
+  utee.Chk(err)
+  log.Println("@channel:",dataMap["channel"])
+  arr,err =jq.Array("items")
+  utee.Chk(err)
+  for i=0;i<len(arr);i++ {
+    log.Println( arr[i] )
+  }
+  for i,v := range arr {
+    log.Println("@i:",i," @v:",v)
+    log.Println(v.(map[string]interface{})["channel"])
+  }
+
 }
 
 func wrapAsArray(jsonTxt string) string {
