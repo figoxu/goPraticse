@@ -64,4 +64,9 @@ func main() {
 	log.Println(strings.Replace(s, "\n", " ", -1))
 	log.Println(s)
 
+	val :=`{"name":"asdfasdf","platform":1,"segmentId":"","step":1,"accurate":0,"msg":null}`
+	badSeg := "\"segmentId\":\"\","
+	val = strings.Replace(val,badSeg,"",1);
+	log.Println(string(val))
+
 }
