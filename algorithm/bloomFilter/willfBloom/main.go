@@ -15,7 +15,8 @@ func main() {
 	go generateGarbage();
 	log.Fatal(http.ListenAndServe(":6666", nil))
 }
-//10亿设备量的过滤器，占用1.8G内存
+//10亿设备量的过滤器，占用1.8G内存   存在碰撞的数量: 229660
+
 func generateGarbage(){
 	var capSize uint = 1000000000
 	filter := standard.New(capSize)
