@@ -37,6 +37,15 @@ func main() {
 	a, b = swap(a, b)
 	log.Println(a, "  ", b)
 
+	log.Println("1 : ",bitStr(1))
+	log.Println("2 : ",bitStr(2))
+	log.Println("4 : ",bitStr(4))
+	log.Println("8 : ",bitStr(8))
+	log.Println("1|2|4|8 :" , bitStr(1 | 2 | 4| 8))
+	log.Println("1&2&4&8 :" , bitStr(1 & 2 & 4& 8))
+
+	log.Println(bitStr( bitAtPosition(3)+bitAtPosition(5)+bitAtPosition(1) ))
+
 }
 
 // 互换两个变量的值
@@ -54,4 +63,15 @@ func swap(a, b int) (int, int) {
 
 func bitStr(v int) string {
 	return fmt.Sprintf("%b", v)
+}
+
+func bitAtPosition(position int) int{
+	if(position-1<0){
+		return 0
+	}
+	result := 1
+	for i:=1;i<position;i++ {
+		result *= 2
+	}
+	return result;
 }
