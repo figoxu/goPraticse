@@ -8,6 +8,7 @@ import (
 	"github.com/zhenjl/bloom/standard"
 	"github.com/zhenjl/cityhash"
 	"hash"
+	"hash/fnv"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
@@ -19,7 +20,9 @@ func main() {
 	log.Fatal(http.ListenAndServe(":6666", nil))
 }
 
-//10亿设备量的过滤器，占用1.8G*2 = 3.6G 内存   存在碰撞的数量: 236
+//10亿设备量的过滤器，占用1.8G*1 = 1.8G 内存   存在碰撞的数量: 236*1000 (cityhash) [大致值]
+//10亿设备量的过滤器，占用1.8G*2 = 3.6G 内存   存在碰撞的数量: 236 (cityhash+md5+fnv.New64())
+//10亿设备量的过滤器，占用1.8G*3 = 5.4G 内存   存在碰撞的数量: 0 (cityhash+md5+)
 func generateGarbage() {
 	var capSize uint = 1000000000
 
@@ -59,6 +62,7 @@ func NewBloomWrap(capSize uint) BloomWrap {
 		wrap = append(wrap, filter)
 	}
 	newFilter(cityhash.New64())
+	newFilter(fnv.New64())
 	newFilter(md5.New())
 	log.Println("bloomLen: ", len(wrap))
 	return wrap
