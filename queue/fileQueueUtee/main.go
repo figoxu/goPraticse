@@ -14,7 +14,7 @@ type FileQueue struct {
 	qr *qr.Qr
 }
 
-func NewFileQueue(bufferCap, concurrent int, worker func(interface{})) (*FileQueue, error) {
+func NewFileQueue(bufferCap, concurrent int, diskLoc, queueName string, worker func(interface{})) (*FileQueue, error) {
 	err := os.MkdirAll(diskLoc, 0777)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func init() {
 
 func main() {
 	log.Println("Hello @loc:", diskLoc)
-	queue, err := NewFileQueue(1000, 10, consume)
+	queue, err := NewFileQueue(1000, 10, diskLoc, queueName, consume)
 	utee.Chk(err)
 	for i := 0; i < 10000000; i++ {
 		queue.Enq(fmt.Sprint("data", i))
