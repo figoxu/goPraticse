@@ -11,7 +11,6 @@ import (
 	"github.com/goftp/ftpd/web"
 	"github.com/goftp/leveldb-auth"
 	"github.com/goftp/leveldb-perm"
-	"github.com/goftp/qiniu-driver"
 	"github.com/goftp/server"
 	"github.com/lunny/log"
 	"github.com/syndtr/goleveldb/leveldb"
@@ -64,29 +63,17 @@ func main() {
 		perm = server.NewSimplePerm("root", "root")
 	}
 
-	typ, _ := cfg.GetValue("driver", "type")
-	var factory server.DriverFactory
-	if typ == "file" {
-		rootPath, _ := cfg.GetValue("file", "rootpath")
-		_, err = os.Lstat(rootPath)
-		if os.IsNotExist(err) {
-			os.MkdirAll(rootPath, os.ModePerm)
-		} else if err != nil {
-			fmt.Println(err)
-			return
-		}
-		factory = &filedriver.FileDriverFactory{
-			rootPath,
-			perm,
-		}
-	} else if typ == "qiniu" {
-		accessKey, _ := cfg.GetValue("qiniu", "accessKey")
-		secretKey, _ := cfg.GetValue("qiniu", "secretKey")
-		bucket, _ := cfg.GetValue("qiniu", "bucket")
-		factory = qiniudriver.NewQiniuDriverFactory(accessKey,
-			secretKey, bucket)
-	} else {
-		log.Fatal("no driver type input")
+	rootPath, _ := cfg.GetValue("file", "rootpath")
+	_, err = os.Lstat(rootPath)
+	if os.IsNotExist(err) {
+		os.MkdirAll(rootPath, os.ModePerm)
+	} else if err != nil {
+		fmt.Println(err)
+		return
+	}
+	factory := &filedriver.FileDriverFactory{
+		rootPath,
+		perm,
 	}
 
 	// start web manage UI
