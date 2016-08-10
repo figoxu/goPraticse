@@ -9,10 +9,12 @@ import (
 	"strings"
 
 	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/server"
+	"log"
 )
 
 type FileDriver struct {
 	RootPath string
+	conn *server.Conn
 	server.Perm
 }
 
@@ -42,10 +44,19 @@ func (driver *FileDriver) realPath(path string) string {
 }
 
 func (driver *FileDriver) Init(conn *server.Conn) {
-	//driver.conn = conn
+	log.Println("====>")
+	log.Println("@conn:",conn)
+	log.Println("@conn.user:",conn.LoginUser()," @isLogin: ",conn.IsLogin())
+	log.Println("<====")
+	log.Println("should be init root path by conn user")
+	driver.conn = conn
 }
 
 func (driver *FileDriver) ChangeDir(path string) error {
+	driver.RootPath = "/home/figo/develop"
+
+	log.Println("==>@path:",path)
+	log.Println("@conn.user:",driver.conn.LoginUser()," @isLogin: ",driver.conn.IsLogin())
 	rPath := driver.realPath(path)
 	f, err := os.Lstat(rPath)
 	if err != nil {
@@ -233,5 +244,5 @@ type FileDriverFactory struct {
 }
 
 func (factory *FileDriverFactory) NewDriver() (server.Driver, error) {
-	return &FileDriver{factory.RootPath, factory.Perm}, nil
+	return &FileDriver{factory.RootPath,nil, factory.Perm}, nil
 }

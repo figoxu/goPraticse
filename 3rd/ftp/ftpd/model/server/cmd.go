@@ -565,10 +565,11 @@ func (cmd commandPass) Execute(conn *Conn, param string) {
 		conn.writeMessage(550, "Checking password error")
 		return
 	}
-
 	if ok {
 		conn.user = conn.reqUser
 		conn.reqUser = ""
+		log.Println("@user:",conn.user," time to init root dir")
+		conn.driver.Init(conn)
 		conn.writeMessage(230, "Password ok, continue")
 	} else {
 		conn.writeMessage(530, "Incorrect password, not logged in")
