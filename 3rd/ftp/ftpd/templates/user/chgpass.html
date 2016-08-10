@@ -1,0 +1,32 @@
+{{template "base/base.html" .}}
+{{template "base/common.html" .}}
+
+{{define "body"}}
+<div style="padding:10px;padding-top:60px">
+<div>
+{{if .Flash.info}}
+	<span class="bg-info">{{.Flash.info}}</span>
+{{end}}
+	</div>
+    <form class="form-horizontal" method="post">
+    	{{.XsrfFormHtml}}
+	<legend>修改密码</legend>
+<div class="control-group">
+<label class="control-label" for="inputEmail">账号名称：</label>
+<div class="controls"><input type="text" name="name" readonly value="{{.userId}}" />
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="inputEmail">
+	新密码：</label>
+	<div class="controls"><input type="password" name="pass"/>
+	</div>
+</div>
+<div class="control-group">
+<div class="controls">
+	<input type="submit" class="btn btn-large btn-primary" value="保存"/>
+</div>
+</div>
+</form>
+</div>
+{{end}}
