@@ -3,7 +3,7 @@ package web
 import (
 	"time"
 
-	"github.com/goftp/server"
+	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/server"
 	"github.com/lunny/tango"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/tango-contrib/binding"

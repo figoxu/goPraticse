@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 
 	"github.com/Unknwon/goconfig"
-	"github.com/goftp/file-driver"
-	"github.com/goftp/ftpd/web"
-	"github.com/goftp/leveldb-auth"
-	"github.com/goftp/leveldb-perm"
-	"github.com/goftp/server"
+	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/web"
+	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/leveldb-auth"
+	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/leveldb-perm"
+	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/server"
+	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/file-driver"
 	"github.com/lunny/log"
 	"github.com/syndtr/goleveldb/leveldb"
 )

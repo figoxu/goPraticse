@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/goftp/server"
+	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/server"
 	"github.com/tango-contrib/renders"
 )
 
