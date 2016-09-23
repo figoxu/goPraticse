@@ -7,17 +7,8 @@ import (
 	"path/filepath"
 
 	"github.com/Unknwon/goconfig"
-	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/web"
-	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/leveldb-auth"
-	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/leveldb-perm"
-	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/server"
-	"github.com/figoxu/goPraticse/3rd/ftp/ftpd/model/file-driver"
 	"github.com/lunny/log"
 	"github.com/syndtr/goleveldb/leveldb"
-)
-
-var (
-	version = "v0.1.1104"
 )
 
 var (
@@ -55,12 +46,12 @@ func main() {
 		return
 	}
 
-	var auth = &ldbauth.LDBAuth{db}
-	var perm server.Perm
+	var auth = &LDBAuth{db}
+	var perm Perm
 	if cfg.MustValue("perm", "type") == "leveldb" {
-		perm = ldbperm.NewLDBPerm(db, "root", "root", os.ModePerm)
+		perm = NewLDBPerm(db, "root", "root", os.ModePerm)
 	} else {
-		perm = server.NewSimplePerm("root", "root")
+		perm = NewSimplePerm("root", "root")
 	}
 
 	rootPath, _ := cfg.GetValue("file", "rootpath")
@@ -71,29 +62,14 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	factory := &filedriver.FileDriverFactory{
+	factory := &FileDriverFactory{
 		rootPath,
 		perm,
 	}
 
-	// start web manage UI
-	useweb, _ := cfg.Bool("web", "enable")
-	if useweb {
-		web.DB = auth
-		web.Perm = perm
-		web.Factory = factory
-		weblisten, _ := cfg.GetValue("web", "listen")
-		admin, _ := cfg.GetValue("admin", "user")
-		pass, _ := cfg.GetValue("admin", "pass")
-		tls, _ := cfg.Bool("web", "tls")
-		certFile, _ := cfg.GetValue("web", "certFile")
-		keyFile, _ := cfg.GetValue("web", "keyFile")
-
-		go web.Web(weblisten, "static", "templates", admin, pass, tls, certFile, keyFile)
-	}
 
 	ftpName, _ := cfg.GetValue("server", "name")
-	opt := &server.ServerOpts{
+	opt := &ServerOpts{
 		Name:    ftpName,
 		Factory: factory,
 		Port:    port,
@@ -101,8 +77,7 @@ func main() {
 	}
 
 	// start ftp server
-	ftpServer := server.NewServer(opt)
-	log.Info("FTP Server", version)
+	ftpServer := NewServer(opt)
 	err = ftpServer.ListenAndServe()
 	if err != nil {
 		log.Fatal("Error starting server:", err)

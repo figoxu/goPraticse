@@ -13,7 +13,7 @@ func main(){
 	f := utee.Md5Str(seed)
 	for i:=0;i<genCount;i++ {
 
-		v := fmt.Sprint( f(strconv.Itoa(i+12345)),f(strconv.Itoa(i+5678)))
-		fmt.Println(v)
+		v := fmt.Sprint( f(strconv.Itoa(i+12345)))
+		fmt.Print(v,",")
 	}
 }

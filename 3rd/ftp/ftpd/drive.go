@@ -1,0 +1,301 @@
+package main
+
+import (
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strings"
+
+	"log"
+)
+
+// For each client that connects to the server, a new FTPDriver is required.
+// Create an implementation if this interface and provide it to FTPServer.
+type DriverFactory interface {
+	NewDriver() (Driver, error)
+}
+
+// You will create an implementation of this interface that speaks to your
+// chosen persistence layer. graval will create a new instance of your
+// driver for each client that connects and delegate to it as required.
+type Driver interface {
+	// Init init
+	Init(*Conn)
+
+	// params  - a file path
+	// returns - a time indicating when the requested path was last modified
+	//         - an error if the file doesn't exist or the user lacks
+	//           permissions
+	Stat(string) (FileInfo, error)
+
+	// params  - path
+	// returns - true if the current user is permitted to change to the
+	//           requested path
+	ChangeDir(string) error
+
+	// params  - path, function on file or subdir found
+	// returns - error
+	//           path
+	ListDir(string, func(FileInfo) error) error
+
+	// params  - path
+	// returns - true if the directory was deleted
+	DeleteDir(string) error
+
+	// params  - path
+	// returns - true if the file was deleted
+	DeleteFile(string) error
+
+	// params  - from_path, to_path
+	// returns - true if the file was renamed
+	Rename(string, string) error
+
+	// params  - path
+	// returns - true if the new directory was created
+	MakeDir(string) error
+
+	// params  - path
+	// returns - a string containing the file data to send to the client
+	GetFile(string, int64) (int64, io.ReadCloser, error)
+
+	// params  - desination path, an io.Reader containing the file data
+	// returns - true if the data was successfully persisted
+	PutFile(string, io.Reader, bool) (int64, error)
+}
+
+type FileDriver struct {
+	RootPath string
+	conn     *Conn
+	Perm
+}
+
+type FileInfo struct {
+	os.FileInfo
+
+	mode  os.FileMode
+	owner string
+	group string
+}
+
+func (f *FileInfo) Mode() os.FileMode {
+	return f.mode
+}
+
+func (f *FileInfo) Owner() string {
+	return f.owner
+}
+
+func (f *FileInfo) Group() string {
+	return f.group
+}
+
+func (driver *FileDriver) realPath(path string) string {
+	paths := strings.Split(path, "/")
+	return filepath.Join(append([]string{driver.RootPath}, paths...)...)
+}
+
+func (driver *FileDriver) Init(conn *Conn) {
+	log.Println("====>")
+	log.Println("@conn:", conn)
+	log.Println("@conn.user:", conn.LoginUser(), " @isLogin: ", conn.IsLogin())
+	log.Println("<====")
+	log.Println("should be init root path by conn user")
+	driver.conn = conn
+}
+
+func (driver *FileDriver) ChangeDir(path string) error {
+	driver.RootPath = "/home/figo/develop"
+
+	log.Println("==>@path:", path)
+	log.Println("@conn.user:", driver.conn.LoginUser(), " @isLogin: ", driver.conn.IsLogin())
+	rPath := driver.realPath(path)
+	f, err := os.Lstat(rPath)
+	if err != nil {
+		return err
+	}
+	if f.IsDir() {
+		return nil
+	}
+	return errors.New("Not a directory")
+}
+
+func (driver *FileDriver) Stat(path string) (FileInfo, error) {
+	basepath := driver.realPath(path)
+	rPath, err := filepath.Abs(basepath)
+	if err != nil {
+		return nil, err
+	}
+	f, err := os.Lstat(rPath)
+	if err != nil {
+		return nil, err
+	}
+	mode, err := driver.Perm.GetMode(path)
+	if err != nil {
+		return nil, err
+	}
+	if f.IsDir() {
+		mode |= os.ModeDir
+	}
+	owner, err := driver.Perm.GetOwner(path)
+	if err != nil {
+		return nil, err
+	}
+	group, err := driver.Perm.GetGroup(path)
+	if err != nil {
+		return nil, err
+	}
+	return &FileInfo{f, mode, owner, group}, nil
+}
+
+func (driver *FileDriver) ListDir(path string, callback func(FileInfo) error) error {
+	basepath := driver.realPath(path)
+	filepath.Walk(basepath, func(f string, info os.FileInfo, err error) error {
+		rPath, _ := filepath.Rel(basepath, f)
+		if rPath == info.Name() {
+			mode, err := driver.Perm.GetMode(rPath)
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				mode |= os.ModeDir
+			}
+			owner, err := driver.Perm.GetOwner(rPath)
+			if err != nil {
+				return err
+			}
+			group, err := driver.Perm.GetGroup(rPath)
+			if err != nil {
+				return err
+			}
+			err = callback(&FileInfo{info, mode, owner, group})
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
+	return nil
+}
+
+func (driver *FileDriver) DeleteDir(path string) error {
+	rPath := driver.realPath(path)
+	f, err := os.Lstat(rPath)
+	if err != nil {
+		return err
+	}
+	if f.IsDir() {
+		return os.Remove(rPath)
+	}
+	return errors.New("Not a directory")
+}
+
+func (driver *FileDriver) DeleteFile(path string) error {
+	rPath := driver.realPath(path)
+	f, err := os.Lstat(rPath)
+	if err != nil {
+		return err
+	}
+	if !f.IsDir() {
+		return os.Remove(rPath)
+	}
+	return errors.New("Not a file")
+}
+
+func (driver *FileDriver) Rename(fromPath string, toPath string) error {
+	oldPath := driver.realPath(fromPath)
+	newPath := driver.realPath(toPath)
+	return os.Rename(oldPath, newPath)
+}
+
+func (driver *FileDriver) MakeDir(path string) error {
+	rPath := driver.realPath(path)
+	return os.Mkdir(rPath, os.ModePerm)
+}
+
+func (driver *FileDriver) GetFile(path string, offset int64) (int64, io.ReadCloser, error) {
+	rPath := driver.realPath(path)
+	f, err := os.Open(rPath)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	info, err := f.Stat()
+	if err != nil {
+		return 0, nil, err
+	}
+
+	f.Seek(offset, os.SEEK_SET)
+
+	return info.Size(), f, nil
+}
+
+func (driver *FileDriver) PutFile(destPath string, data io.Reader, appendData bool) (int64, error) {
+	rPath := driver.realPath(destPath)
+	var isExist bool
+	f, err := os.Lstat(rPath)
+	if err == nil {
+		isExist = true
+		if f.IsDir() {
+			return 0, errors.New("A dir has the same name")
+		}
+	} else {
+		if os.IsNotExist(err) {
+			isExist = false
+		} else {
+			return 0, errors.New(fmt.Sprintln("Put File error:", err))
+		}
+	}
+
+	if appendData && !isExist {
+		appendData = false
+	}
+
+	if !appendData {
+		if isExist {
+			err = os.Remove(rPath)
+			if err != nil {
+				return 0, err
+			}
+		}
+		f, err := os.Create(rPath)
+		if err != nil {
+			return 0, err
+		}
+		defer f.Close()
+		bytes, err := io.Copy(f, data)
+		if err != nil {
+			return 0, err
+		}
+		return bytes, nil
+	}
+
+	of, err := os.OpenFile(rPath, os.O_APPEND|os.O_RDWR, 0660)
+	if err != nil {
+		return 0, err
+	}
+	defer of.Close()
+
+	_, err = of.Seek(0, os.SEEK_END)
+	if err != nil {
+		return 0, err
+	}
+
+	bytes, err := io.Copy(of, data)
+	if err != nil {
+		return 0, err
+	}
+
+	return bytes, nil
+}
+
+type FileDriverFactory struct {
+	RootPath string
+	Perm
+}
+
+func (factory *FileDriverFactory) NewDriver() (Driver, error) {
+	return &FileDriver{factory.RootPath, nil, factory.Perm}, nil
+}
