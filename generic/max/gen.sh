@@ -1,0 +1,1 @@
+cat ./generic_max.go | genny gen "NumberType=NUMBERS" > numbers_max_get.go
