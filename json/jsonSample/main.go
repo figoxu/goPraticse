@@ -13,7 +13,12 @@ func main() {
 "a":1,
 "b":"bilibilibibi",
 "c":1.02,
-"d":false
+"d":false,
+"e":{
+  	"e1":"hello",
+  	"e2":"world",
+  	"e3":2016
+  }
 }`
 	utee.Chk(json.Unmarshal([]byte(val), &a))
 	log.Println("Hello")
