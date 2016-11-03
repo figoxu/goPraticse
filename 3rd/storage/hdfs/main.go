@@ -12,7 +12,8 @@ func main() {
 	defer Figo.Catch()
 	os.Setenv("HADOOP_USER_NAME", "root")
 	client, _ := hdfs.New("192.168.108.131:9000")
-	fname := "/ffeee.txt"
+	fname := "/figo/tmp/how/are/you/figoTmp2016.txt"
+	client.MkdirAll("/figo/tmp/how/are/you/", 0644)
 	w, err := client.Create(fname)
 	utee.Chk(err)
 	v, err := w.Write([]byte("Hello Figo Over There"))
