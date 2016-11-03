@@ -12,14 +12,13 @@ func main() {
 	defer Figo.Catch()
 	os.Setenv("HADOOP_USER_NAME", "root")
 	client, _ := hdfs.New("192.168.108.131:9000")
-	fname := "/hello4.txt"
-	if _, err := client.Stat(fname); err != nil {
-		err := client.CreateEmptyFile(fname)
-		utee.Chk(err)
-	}
-	w, err := client.Append(fname)
+	fname := "/ffeee.txt"
+	w, err := client.Create(fname)
 	utee.Chk(err)
-	w.Write([]byte("Hello Figo Over There"))
+	v, err := w.Write([]byte("Hello Figo Over There"))
+	log.Println("@v:", v)
+	utee.Chk(err)
+	log.Println("@v:", v)
 	w.Close()
 	b, err := client.ReadFile(fname)
 	utee.Chk(err)
