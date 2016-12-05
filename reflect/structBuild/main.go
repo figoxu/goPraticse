@@ -20,12 +20,13 @@ func main() {
 		v := reflect.New(t).Elem()
 		fmt.Println(v)
 		fmt.Println(v.Kind())
+		fmt.Println(t.String())
 	}
 
 }
 
 func init() {
-	regStruct = make(map[string]interface{})
 	regStruct["Foo"] = Foo{}
+	regStruct = make(map[string]interface{})
 	regStruct["Bar"] = Bar{}
 }
