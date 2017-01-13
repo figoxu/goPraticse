@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	name := Figo.ReadInput("What's your name ?")
+	name := Figo.ReadInput("What's your name ?",Figo.THEME_Green)
 	log.Println("My Name Is ", name)
 }
