@@ -1,20 +1,11 @@
 package main
 
 import (
-	"bufio"
+	"github.com/figoxu/Figo"
 	"log"
-	"os"
 )
 
 func main() {
-	running := true
-	reader := bufio.NewReader(os.Stdin)
-	for running {
-		data, _, _ := reader.ReadLine()
-		command := string(data)
-		if command == "stop" {
-			running = false
-		}
-		log.Println("command", command)
-	}
+	name := Figo.ReadInput("What's your name ?",Figo.THEME_Green)
+	log.Println("My Name Is ", name)
 }
