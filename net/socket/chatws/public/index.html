@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div id="resultImg" style="width:200px;height:20px;"></div>
+<div id="resultCode" style="width:200px;height:20px;"></div>
+<script type="text/javascript">
+    function bin2hex(bin){
+        var binArr = bin.split('');
+        var result = '';
+        binArr.forEach(function(item){
+            var hex = item.charCodeAt(0).toString(16).toUpperCase();
+            result += (hex.length<2? '0' : '') + hex;
+        });
+        return result;
+    }
+    function getPrint(data){
+        var data = data.replace('data:image/png;base64,','');
+        var bin = atob(data);
+        return bin2hex(bin.slice(-16,-12));
+    }
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    var text = document.domain;
+    ctx.textBaseline = 'top';
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#B8B8B8';
+    ctx.fillText(text,0,0);
+    ctx.fillStyle = 'rgba(0,0,0,.5)';
+    ctx.fillText('All Right Reserved',0,16);
+    var img = new Image();
+    img.src = canvas.toDataURL();
+    document.querySelector('#resultImg').appendChild(img);
+    document.querySelector('#resultCode').innerHTML += getPrint(img.src);
+    document.querySelector('#resultImg').style.display="none";
+</script>
+</body>
+</html>
