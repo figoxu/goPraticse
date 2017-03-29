@@ -1,9 +1,12 @@
 package main
 
 import (
-	"github.com/astaxie/beego/orm"
+	"database/sql"
+	"fmt"
 	"github.com/figoxu/Figo"
+	"github.com/quexer/utee"
 	"log"
+	"time"
 )
 
 type HotColdInfo struct {
@@ -19,23 +22,22 @@ var rsWriter RedisqlWriter
 
 func main() {
 	log.Println("main")
-	rp := Figo.RedisPool("127.0.0.1", "")
-	orm.Debug = true
-	conf := Figo.MysqlConf{
-		Host:       "127.0.0.1",
-		Pwd:        "xujianhui0915",
-		User:       "root",
-		Port:       3306,
-		Name:       "figo_research",
-		ConnIdle:   2,
-		ConnActive: 2,
-	}
-	conf.Conf(new(HotColdInfo))
-	orm.RunSyncdb("default", false, true)
+	rp := Figo.RedisPool("127.0.0.1:6379", "")
+	db, err := sql.Open("mysql", "user:password@/dbname")
+	utee.Chk(err)
+	rsWriter = NewRedisqlWriter(rp, db)
 
-	rsWriter = RedisqlWriter{
-		hotWriter:  rp,
-		coldWriter: orm.NewOrm(),
+	for i := 0; i < 1000; i++ {
+		info := HotColdInfo{
+			Id:          i,
+			IdentityNo:  fmt.Sprint("dv_", i),
+			Name:        fmt.Sprint("name_", i),
+			Age:         i,
+			Salary:      i,
+			Description: fmt.Sprint("description_", i),
+		}
+		rsWriter.write(info)
 	}
 
+	time.Sleep(time.Hour)
 }
