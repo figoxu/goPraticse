@@ -84,6 +84,7 @@ func (p *RedisqlWriter) hibernate() error {
 		r := p.hotWriter.Get()
 		defer r.Close()
 		log.Println("HSCAN", p.hashKey(), 0, "MATCH", fmt.Sprint(pk, "_*"))
+//		err with hscan
 		dataMap, err := redis.StringMap(r.Do("HSCAN", p.hashKey(), 0, "MATCH", fmt.Sprint(pk, "_*")))
 		//how to mapping redis string map to golang struct
 		utee.Chk(err)
