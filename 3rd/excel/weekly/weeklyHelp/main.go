@@ -25,7 +25,6 @@ func appendResult(category, content string) {
 }
 
 func main() {
-	log.Println("Hello world")
 	fnames := []string{}
 	filepath.Walk("./", func(path string, fi os.FileInfo, err error) error {
 		fnames = append(fnames, path)
