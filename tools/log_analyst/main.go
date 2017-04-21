@@ -6,10 +6,28 @@ import (
 	"io/ioutil"
 	"github.com/quexer/utee"
 	"fmt"
+	"flag"
 )
 
+var (
+	logPath          string
+)
+
+func init(){
+	flag.StringVar(&logPath, "logpath", "./nohup.out", "the log path for analyst")
+}
+
+
 func main(){
-	logPath := "/home/figo/delete_it/log.20170330.err"
+	flag.Parse()
+	log.Println("time to analyst log file @logPath:  ",logPath)
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("Error : @File:",logPath," Not Found")
+			log.Println("Run Command As Following Sample: ")
+			log.Println("./log_analyst -logpath ./nohup.out")
+		}
+	}()
 	packageStr := "talkingdata"
 	logAnalysist(logPath,packageStr)
 }
