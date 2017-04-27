@@ -11,6 +11,7 @@ import (
 var DB *sqlx.DB
 
 /* ----------------------------------------------------- */
+//db, err := sqlx.Open("postgres", "postgres://postgres:postgres@192.168.56.101/test_db?sslmode=disable")
 
 type Address struct {
 	Home string
