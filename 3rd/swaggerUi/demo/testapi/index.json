@@ -1,0 +1,577 @@
+{
+    "apiVersion": "1.0.0",
+    "swaggerVersion": "1.2",
+    "basePath": "{{.}}",
+    "resourcePath": "/testapi",
+    "apis": [
+        {
+            "path": "/testapi/get-string-by-int/{some_id}",
+            "description": "get string by ID",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetStringByInt",
+                    "type": "string",
+                    "items": {},
+                    "summary": "get string by ID",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "some_id",
+                            "description": "Some ID",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "object",
+                            "responseModel": "string"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-struct-by-int/{some_id}",
+            "description": "get struct by ID",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetStructByInt",
+                    "type": "mytest.swagger-demo.StructureWithEmbededStructure",
+                    "items": {},
+                    "summary": "get struct by ID",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "some_id",
+                            "description": "Some ID",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "offset",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "limit",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.StructureWithEmbededStructure"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-struct2-by-int/{some_id}",
+            "description": "get struct2 by ID",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetStruct2ByInt",
+                    "type": "mytest.swagger-demo.StructureWithEmbededPointer",
+                    "items": {},
+                    "summary": "get struct2 by ID",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "some_id",
+                            "description": "Some ID",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "offset",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "limit",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.StructureWithEmbededPointer"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-simple-array-by-string/{some_id}",
+            "description": "get simple array by ID",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetSimpleArrayByString",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "summary": "get simple array by ID",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "some_id",
+                            "description": "Some ID",
+                            "dataType": "string",
+                            "type": "string",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "offset",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "limit",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "array",
+                            "responseModel": "string"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-struct-array-by-string/{some_id}",
+            "description": "get struct array by ID",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetStructArrayByString",
+                    "type": "array",
+                    "items": {
+                        "$ref": "mytest.swagger-demo.SimpleStructureWithAnnotations"
+                    },
+                    "summary": "get struct array by ID",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "some_id",
+                            "description": "Some ID",
+                            "dataType": "string",
+                            "type": "string",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "offset",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "limit",
+                            "description": "Offset",
+                            "dataType": "int",
+                            "type": "int",
+                            "format": "",
+                            "allowMultiple": false,
+                            "required": true,
+                            "minimum": 0,
+                            "maximum": 0
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "array",
+                            "responseModel": "mytest.swagger-demo.SimpleStructureWithAnnotations"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-interface",
+            "description": "get interface",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetInterface",
+                    "type": "mytest.swagger-demo.InterfaceType",
+                    "items": {},
+                    "summary": "get interface",
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.InterfaceType"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-simple-aliased",
+            "description": "get simple aliases",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetSimpleAliased",
+                    "type": "string",
+                    "items": {},
+                    "summary": "get simple aliases",
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "object",
+                            "responseModel": "string"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-array-of-interfaces",
+            "description": "get array of interfaces",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetArrayOfInterfaces",
+                    "type": "array",
+                    "items": {
+                        "$ref": "mytest.swagger-demo.InterfaceType"
+                    },
+                    "summary": "get array of interfaces",
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "array",
+                            "responseModel": "mytest.swagger-demo.InterfaceType"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/testapi/get-struct3",
+            "description": "get struct3",
+            "operations": [
+                {
+                    "httpMethod": "GET",
+                    "nickname": "GetStruct3",
+                    "type": "mytest.swagger-demo.StructureWithSlice",
+                    "items": {},
+                    "summary": "get struct3",
+                    "responseMessages": [
+                        {
+                            "code": 200,
+                            "message": "",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.StructureWithSlice"
+                        },
+                        {
+                            "code": 400,
+                            "message": "We need ID!!",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        },
+                        {
+                            "code": 404,
+                            "message": "Can not find ID",
+                            "responseType": "object",
+                            "responseModel": "mytest.swagger-demo.APIError"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "models": {
+        "mytest.swagger-demo.APIError": {
+            "id": "mytest.swagger-demo.APIError",
+            "properties": {
+                "ErrorCode": {
+                    "type": "int",
+                    "description": "",
+                    "items": {},
+                    "format": ""
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "",
+                    "items": {},
+                    "format": ""
+                }
+            }
+        },
+        "mytest.swagger-demo.InterfaceType": {
+            "id": "mytest.swagger-demo.InterfaceType",
+            "properties": null
+        },
+        "mytest.swagger-demo.SimpleStructureWithAnnotations": {
+            "id": "mytest.swagger-demo.SimpleStructureWithAnnotations",
+            "required": [
+                "Name"
+            ],
+            "properties": {
+                "Name": {
+                    "type": "string",
+                    "description": "",
+                    "items": {},
+                    "format": ""
+                },
+                "id": {
+                    "type": "int",
+                    "description": "",
+                    "items": {},
+                    "format": ""
+                }
+            }
+        },
+        "mytest.swagger-demo.StructureWithEmbededPointer": {
+            "id": "mytest.swagger-demo.StructureWithEmbededPointer",
+            "properties": {
+                "Id": {
+                    "type": "int",
+                    "description": "",
+                    "items": {},
+                    "format": ""
+                },
+                "Name": {
+                    "type": "array",
+                    "description": "",
+                    "items": {
+                        "type": "byte"
+                    },
+                    "format": ""
+                }
+            }
+        },
+        "mytest.swagger-demo.StructureWithEmbededStructure": {
+            "id": "mytest.swagger-demo.StructureWithEmbededStructure",
+            "properties": {
+                "Id": {
+                    "type": "int",
+                    "description": "",
+                    "items": {},
+                    "format": ""
+                },
+                "Name": {
+                    "type": "array",
+                    "description": "",
+                    "items": {
+                        "type": "byte"
+                    },
+                    "format": ""
+                }
+            }
+        },
+        "mytest.swagger-demo.StructureWithSlice": {
+            "id": "mytest.swagger-demo.StructureWithSlice",
+            "properties": {
+                "Id": {
+                    "type": "int",
+                    "description": "",
+                    "items": {},
+                    "format": ""
+                },
+                "Name": {
+                    "type": "array",
+                    "description": "",
+                    "items": {
+                        "type": "byte"
+                    },
+                    "format": ""
+                }
+            }
+        }
+    }
+}

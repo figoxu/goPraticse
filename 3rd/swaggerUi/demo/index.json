@@ -1,0 +1,23 @@
+{
+    "apiVersion": "1.0.0",
+    "swaggerVersion": "1.2",
+    "basePath": "{{.}}",
+    "apis": [
+        {
+            "path": "/testapi",
+            "description": "get string by ID"
+        },
+        {
+            "path": "/orders",
+            "description": "Order management API"
+        }
+    ],
+    "info": {
+        "title": "Swagger Example API",
+        "description": "Swagger Example API",
+        "contact": "varyous@gmail.com",
+        "termsOfServiceUrl": "http://yvasiyarov.com/",
+        "license": "BSD",
+        "licenseUrl": "http://yvasiyarov.com/"
+    }
+}
