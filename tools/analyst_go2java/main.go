@@ -101,6 +101,9 @@ func genJava(fpath,packageName string){
 }
 
 func mapTpGo2Java(tp string)string{
+	if strings.HasPrefix(tp,"*") {
+		tp = strings.Replace(tp,"*","",-1)
+	}
 	castTp := func(tpStr string)string{
 		if(tpStr=="int"){
 			return "Integer"
