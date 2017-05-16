@@ -25,9 +25,17 @@ func TestMethod(msg string){
 		resource:"testLock",
 	}
 	defer ll.Unlock()
-	ll.Lock(60)
+	lock := func(){
+		for{
+			if b,_:=ll.Lock(60);b==true{
+				return
+			}
+			time.Sleep(time.Nanosecond*time.Duration(3))
+		}
+	}
+	lock()
 	log.Println(msg)
-	time.Sleep(time.Second*time.Duration(5))
+	time.Sleep(time.Second*time.Duration(10))
 }
 
 type RedisMutex struct {
