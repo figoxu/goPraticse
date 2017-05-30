@@ -9,10 +9,11 @@ import (
 	"path/filepath"
 	"os"
 )
-var basepath="D:/figo/workspace/workspace_figo_shine/sdz-admin/src/main/java/"
+
+var basepath="/Users/xujianhui/GoglandProjects/sdz-mobile-app/doc/java_vo/"
 
 func main(){
-	scanpath:="D:/figo/workspace/workspace_praticse/workspace_go/sdz-mobile-app/"
+	scanpath:="/Users/xujianhui/GoglandProjects/sdz-mobile-app/"
 	filepath.Walk(scanpath, func(path string, fileInfo os.FileInfo, err error) error {
 		if ( fileInfo == nil ) {return err}
 		if fileInfo.IsDir() {return nil}
@@ -93,8 +94,12 @@ func genJava(fpath,packageName string){
 		targetPath:=fmt.Sprint(basepath,"/",packageName,"/",className,".java")
 		Figo.FilePath(targetPath).Open()
 		if packageName!=""{
+			log.Println("[v1] => @targetPath:",targetPath)
+			log.Println("[v1] => @codes:",codes.String())
 			fileUtee.FlushWrite(targetPath,codes.String())
 		}else{
+			log.Println("[v2] => @targetPath:",fmt.Sprint(basepath,className,".java"))
+			log.Println("[v2] => @codes:",codes.String())
 			fileUtee.FlushWrite(fmt.Sprint(basepath,className,".java"),codes.String())
 		}
 	}
