@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var basepath="/Users/xujianhui/GoglandProjects/sdz-mobile-app/doc/java_vo/"
+var basepath="/Users/xujianhui/develop/java/workspace/xckj/sdz-app-vo/src/main/java/"
 
 func main(){
 	scanpath:="/Users/xujianhui/GoglandProjects/sdz-mobile-app/"
