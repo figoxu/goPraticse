@@ -82,7 +82,7 @@ func genJava(fpath,packageName string){
 					continue
 				}else if i<1 {
 					i++
-					nameStr = val
+					nameStr = strings.ToLower(val[0:1])+val[1:]
 				}else if i<2 {
 					i++
 					typeStr = val
