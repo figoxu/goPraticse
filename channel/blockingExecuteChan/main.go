@@ -9,13 +9,14 @@ import (
 
 
 func main() {
-	bq := Figo.NewBlockExecuteQ(1000, 3, 3, func(v interface{}, c chan bool) {
-		if randomdata.Boolean() {
-			c <- true
+	bq := Figo.NewBlockExecuteQ(1000, 3, 3, func(v interface{})bool {
+		b := randomdata.Boolean()
+		if b {
 			log.Println("execute @v:", v, " SUCCESS")
 		} else {
 			log.Println("execute @v:", v, " FAILURE")
 		}
+		return b
 	})
 
 	mockInput := func() {
