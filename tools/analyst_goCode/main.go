@@ -1,30 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"github.com/figoxu/Figo"
+	//"log"
+	"github.com/quexer/utee"
 )
 
 func main() {
-	seq := Figo.NewSeqMem()
-	seqStr := func() string {
-		return fmt.Sprint(seq.Next())
+	//goFileName := Figo.ReadInput("请输入需要解析的Golang文件名:",Figo.THEME_Red,Figo.THEME_Green)
+	//log.Println(goFileName)
+
+	goFileName:="/Users/xujianhui/develop/golang/gopath/src/github.com/figoxu/goPraticse/tdTalker/lecture01/channel/pAndC/main.go"
+
+	fu:=Figo.FileUtee{}
+	fs,err:=fu.ReadLinesSlice(goFileName)
+	utee.Chk(err)
+	var codeStack CodeStack = make([]Code,0)
+	for _,f:=range fs {
+		codeStack = AppendCode(codeStack,f)
 	}
-	tree := &BaseNode{
-		Id: seqStr(),
-	}
-	for lv1Count := 0; lv1Count < 5; lv1Count++ {
-		node := &BaseNode{
-			Id: seqStr(),
-		}
-		tree.AddChild(node)
-		for lv2 := 0; lv2 < 2; lv2++ {
-			node.AddChild(&BaseNode{
-				Id: seqStr(),
-			})
-		}
-	}
-	Figo.PrintJson("==>", tree)
-	tree.RemoveChild(&BaseNode{Id: "2"})
-	Figo.PrintJson("==>", tree)
+	Figo.PrintJson("===>",codeStack)
 }
