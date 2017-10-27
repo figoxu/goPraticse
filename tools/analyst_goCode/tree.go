@@ -1,33 +1,26 @@
 package main
 
-type Node interface {
-	AddChild(node Node)
-	RemoveChild(node Node)
-	RemoveById(id string)
-	GetParent() Node
-	GetId() string
+type CodeNode struct {
+	Id        string
+	CodeStack CodeStack
+	Parent    *CodeNode `json:"-"`
+	Children  []*CodeNode
 }
 
-type BaseNode struct {
-	Id       string
-	Parent   *BaseNode `json:"-"`
-	Children []*BaseNode
-}
-
-func (p *BaseNode) AddChild(node *BaseNode) {
+func (p *CodeNode) AddChild(node *CodeNode) {
 	if p.Children == nil {
-		p.Children = make([]*BaseNode, 0)
+		p.Children = make([]*CodeNode, 0)
 	}
 	p.Children = append(p.Children, node)
 	node.Parent = p
 }
 
-func (p *BaseNode) RemoveChild(node *BaseNode) {
+func (p *CodeNode) RemoveChild(node *CodeNode) {
 	p.RemoveById(node.Id)
 }
 
-func (p *BaseNode) RemoveById(id string) {
-	cs := make([]*BaseNode, 0)
+func (p *CodeNode) RemoveById(id string) {
+	cs := make([]*CodeNode, 0)
 	for _, child := range p.Children {
 		if child.GetId() != id {
 			cs = append(cs, child)
@@ -38,10 +31,10 @@ func (p *BaseNode) RemoveById(id string) {
 	p.Children = cs
 }
 
-func (p *BaseNode) GetParent() *BaseNode {
+func (p *CodeNode) GetParent() *CodeNode {
 	return p.Parent
 }
 
-func (p *BaseNode) GetId() string {
+func (p *CodeNode) GetId() string {
 	return p.Id
 }

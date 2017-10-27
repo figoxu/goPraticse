@@ -19,5 +19,5 @@ func main() {
 	for _,f:=range fs {
 		codeStack = AppendCode(codeStack,f)
 	}
-	Figo.PrintJson("===>",codeStack)
+	Figo.PrintJson("===>",codeStack.split("{","}"))
 }

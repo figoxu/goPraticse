@@ -16,3 +16,32 @@ func AppendCode(stacks CodeStack,val string)CodeStack{
 	stacks = append(stacks,code)
 	return stacks
 }
+
+func (p CodeStack) split(braceLeft,braceRight string) CodeStack{
+	var preStack,codeStack CodeStack = make([]Code,0),make([]Code,0)
+	for _,code:=range p {
+		if code=="" {
+			continue
+		}
+		codes:=code.Split(braceLeft,true)
+		preStack = append(preStack,codes...)
+	}
+	for _,code:=range preStack{
+		if code=="" {
+			continue
+		}
+		if string(code)==braceLeft {
+			codeStack = append(codeStack,code)
+			continue
+		}
+		codes:=code.Split(braceRight,false)
+		codeStack = append(codeStack,codes...)
+	}
+	return codeStack
+}
+
+
+//func (p CodeStack) ToNode(braceLeft,braceRight string)CodeNode{
+//	codeStack:=p.split(braceLeft,braceRight)
+//	return nil
+//}
