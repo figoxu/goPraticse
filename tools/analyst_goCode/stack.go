@@ -40,8 +40,3 @@ func (p CodeStack) split(braceLeft,braceRight string) CodeStack{
 	return codeStack
 }
 
-
-//func (p CodeStack) ToNode(braceLeft,braceRight string)CodeNode{
-//	codeStack:=p.split(braceLeft,braceRight)
-//	return nil
-//}
