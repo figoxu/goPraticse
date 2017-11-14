@@ -10,6 +10,9 @@ func main() {
 	log.Println(parseIp("59.110.166.246:5052"))
 	log.Println(parseIp("8.8.8.8:65535"))
 	log.Println(parseIp("255.255.255.0:65535"))
+	log.Println(parseIp2bytes("59.110.166.246:5052"))
+	log.Println(parseIp2bytes("8.8.8.8:65535"))
+	log.Println(parseIp2bytes("255.255.255.0:65535"))
 }
 
 func parseIp(ipAddr string) (ips []byte, port uint16) {
@@ -27,4 +30,13 @@ func parseIp(ipAddr string) (ips []byte, port uint16) {
 		ips = append(ips, byte(v))
 	}
 	return ips, port
+}
+
+func parseIp2bytes(ipAddr string) (bs []byte) {
+	ips, port := parseIp(ipAddr)
+	h, l := byte(port>>8), byte(port&0xff)
+	bs = make([]byte, 0)
+	bs = append(bs, ips...)
+	bs = append(bs, h, l)
+	return bs
 }
