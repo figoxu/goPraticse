@@ -19,6 +19,8 @@ func main() {
 	log.Println(bs, "   ", parsebytes2IpAddr(bs))
 	bs = parseIp2bytes("127.0.0.1:256")
 	log.Println(bs, "   ", parsebytes2IpAddr(bs))
+	bs = parseIp2bytes("192.168.0.1")
+	log.Println(bs, "   ", parsebytes2IpAddr(bs))
 }
 
 func parseIp(ipAddr string) (ips []byte, port uint16) {
@@ -49,6 +51,10 @@ func parseIp2bytes(ipAddr string) (bs []byte) {
 
 func parsebytes2IpAddr(bs []byte) (addr string) {
 	addr = fmt.Sprint(bs[0], ".", bs[1], ".", bs[2], ".", bs[3])
-	addr = fmt.Sprint(addr, ":", int(bs[4])*256+int(bs[5]))
+	if len(bs)==6 {
+		addr = fmt.Sprint(addr, ":", int(bs[4])*256+int(bs[5]))
+	}else{
+		addr = fmt.Sprint(addr, ":80")
+	}
 	return addr
 }
