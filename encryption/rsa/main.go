@@ -14,4 +14,10 @@ func main() {
 	log.Println(Figo.Bh.BStr(data))
 	origData, _ := PriDecrypt(data)
 	fmt.Println(string(origData))
+
+
+	data,_=PrivateEncrypt([]byte("Hello Figo"))
+	log.Println(Figo.Bh.BStr(data))
+	origData, _ = PublicDecrypt(data)
+	fmt.Println(string(origData))
 }
