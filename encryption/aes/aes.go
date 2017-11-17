@@ -12,6 +12,11 @@ func encrypt(origData,keyBytes []byte) ([]byte, error) {
 		return nil, err
 	}
 	blockSize := block.BlockSize()
+	PKCS5Padding:=func (ciphertext []byte, blockSize int) []byte {
+		padding := blockSize - len(ciphertext)%blockSize
+		padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+		return append(ciphertext, padtext...)
+	}
 	origData = PKCS5Padding(origData, blockSize)
 	blockMode := cipher.NewCBCEncrypter(block, keyBytes[:blockSize])
 	crypted := make([]byte, len(origData))
@@ -28,18 +33,11 @@ func decrypt(crypted,keyBytes []byte) ([]byte, error) {
 	blockMode := cipher.NewCBCDecrypter(block, keyBytes[:blockSize])
 	origData := make([]byte, len(crypted))
 	blockMode.CryptBlocks(origData, crypted)
+	PKCS5UnPadding:=func (origData []byte) []byte {
+		length := len(origData)
+		unpadding := int(origData[length-1])
+		return origData[:(length - unpadding)]
+	}
 	origData = PKCS5UnPadding(origData)
 	return origData, nil
-}
-
-func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
-	padding := blockSize - len(ciphertext)%blockSize
-	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(ciphertext, padtext...)
-}
-
-func PKCS5UnPadding(origData []byte) []byte {
-	length := len(origData)
-	unpadding := int(origData[length-1])
-	return origData[:(length - unpadding)]
 }
