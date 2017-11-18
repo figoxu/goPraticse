@@ -4,6 +4,9 @@ import (
 	"github.com/figoxu/Figo"
 	"log"
 	"github.com/quexer/utee"
+	"encoding/hex"
+	//"encoding/base64"
+	"encoding/base64"
 )
 
 // 可通过openssl产生
@@ -54,4 +57,24 @@ func main() {
 	result, err = rsaHelp.PriDec(bs)
 	utee.Chk(err)
 	log.Println(string(result))
+
+	bs,err=hex.DecodeString("942F87A6BB94B1F0E218D149306CEB9A366A149A12EFEFFA0E398D8A374105D2CAA0BD043116D1B95FEFA4BB0318189332D7D9A651E97A1AE793089E4FB51DE07470618F6AD8AE7E154C640913AD2727AC25FBCB64FEBFC6CCC20A8432FDF4FA30E3AB847572DF1932E43CFCD081BC80F3FC1FA03388E975D7E49CC5CFDDF3F8")
+	utee.Chk(err)
+	log.Println("=====")
+	log.Println(Figo.Bh.BStr(bs))
+	log.Println("=====")
+	bs,err=rsaHelp.PubDec(bs)
+	utee.Chk(err)
+	log.Println(Figo.Bh.BStr(bs))
+	log.Println("-----")
+
+	log.Println("<--------->")
+	bs,err=base64.StdEncoding.DecodeString("lC+HpruUsfDiGNFJMGzrmjZqFJoS7+/6DjmNijdBBdLKoL0EMRbRuV/vpLsDGBiTMtfZplHpehrnkwieT7Ud4HRwYY9q2K5+FUxkCROtJyesJfvLZP6/xszCCoQy/fT6MOOrhHVy3xky5Dz80IG8gPP8H6AziOl11+Scxc/d8/g=")
+	utee.Chk(err)
+	log.Println(Figo.Bh.BStr(bs))
+	log.Println("<--------->")
+	bs,err=rsaHelp.PubDec(bs)
+	utee.Chk(err)
+	log.Println(Figo.Bh.BStr(bs))
+
 }
