@@ -10,30 +10,42 @@ import (
 	"os"
 )
 
-var basepath="/Users/xujianhui/develop/java/workspace/xckj/sdz-app-vo/src/main/java/"
+//var basepath="/Users/xujianhui/develop/java/workspace/xckj/sdz-app-vo/src/main/java/"
+var basepath="/Users/xujianhui/develop/java/workspace/xckj/sdz-app-tool-vo/src/main/java/"
 
 func main(){
-	scanpath:="/Users/xujianhui/GoglandProjects/sdz-mobile-app/"
+	//scanpath:="/Users/xujianhui/GoglandProjects/sdz-mobile-app/"
+	scanpath:="/Users/xujianhui/develop/golang/gopath/src/rvcts.com/sdz-app-tool"
+
+
+	genByDir(scanpath)
+}
+
+func genByDir(scanpath string){
 	filepath.Walk(scanpath, func(path string, fileInfo os.FileInfo, err error) error {
-		if ( fileInfo == nil ) {return err}
-		if fileInfo.IsDir() {return nil}
-		if strings.HasSuffix(path,"go") {
-			targetPath:=Figo.FilePath(path).UnixPath()
-			targetPath = targetPath[0:strings.LastIndex(targetPath,"/")]
-			sPath:=Figo.FilePath(scanpath).UnixPath()
-			packageName:=strings.Replace(targetPath,sPath,"",-1)
-			if targetPath==packageName {
-				packageName=""
+		if ( fileInfo == nil ) {
+			return err
+		}
+		if fileInfo.IsDir() {
+			return nil
+		}
+		if strings.HasSuffix(path, "go") {
+			targetPath := Figo.FilePath(path).UnixPath()
+			targetPath = targetPath[0:strings.LastIndex(targetPath, "/")]
+			sPath := Figo.FilePath(scanpath).UnixPath()
+			packageName := strings.Replace(targetPath, sPath, "", -1)
+			if targetPath == packageName {
+				packageName = ""
 			}
-			log.Println("path:",path)
-			log.Println("targetPath:",targetPath)
-			log.Println("packageName:",packageName)
-			genJava(path,packageName)
+			log.Println("path:", path)
+			log.Println("targetPath:", targetPath)
+			log.Println("packageName:", packageName)
+			genJava(path, packageName)
 		}
 		return nil
 	})
-
 }
+
 
 func genJava(fpath,packageName string){
 	fileUtee:=Figo.FileUtee{}
