@@ -1,7 +1,9 @@
 package main
 
-
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 func do(i interface{}) {
 	switch v := i.(type) {
@@ -27,6 +29,17 @@ type B struct {
 }
 
 func main() {
+	v:="hello"
+	switch v {
+	case "hello":
+		log.Println(">> world")
+	case "foo":
+		log.Println(">> bar")
+	default:
+		log.Println(">> Not Found")
+	}
+
+
 	do(21)
 	do("hello")
 	do(true)
