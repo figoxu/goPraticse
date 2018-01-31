@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"github.com/figoxu/Figo"
 )
 
 func do(i interface{}) {
@@ -29,11 +30,10 @@ type B struct {
 }
 
 func main() {
-	v:="hello"
-	switch v {
-	case "hello":
+
+	switch v :="hello"; {
+	case  Figo.Exist(v,"hello","foo") :
 		log.Println(">> world")
-	case "foo":
 		log.Println(">> bar")
 	default:
 		log.Println(">> Not Found")
