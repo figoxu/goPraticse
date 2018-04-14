@@ -15,7 +15,7 @@ var basepath="/Users/xujianhui/develop/java/workspace/xckj/sdz-app-tool-vo/src/m
 
 func main(){
 	//scanpath:="/Users/xujianhui/develop/golang/gopath/src/rvcts.com/sdz-solution/sdz-mobile-app"
-	scanpath:="/Users/xujianhui/develop/golang/gopath/src/rvcts.com/sdz-solution/sdz-app-tool"
+	scanpath:="/Users/xujianhui/develop/golang/gopath/src/startrip.vip/sdz-solution/sdz-app-tool"
 	genByDir(scanpath)
 }
 
