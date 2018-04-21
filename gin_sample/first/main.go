@@ -4,7 +4,14 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"fmt"
+	"github.com/figoxu/gh"
 )
+
+type Env struct{
+	fh *gh.FormHelper
+	ph *gh.ParamHelper
+}
+
 
 func main() {
 	r := gin.Default()
@@ -12,6 +19,7 @@ func main() {
 	r.GET("/hello/name/:name", h_helloByName)
 	r.GET("/hello/redirect/:url", h_helloRedirect)
 	r.POST("/hello/form",h_helloForm)
+	r.POST("/hello/gh/:name/:age/:bossFlag",m_gh,h_hello_gh)
 	r.Run(":8080")
 }
 
@@ -43,4 +51,26 @@ func h_helloForm(c *gin.Context){
 		"msg":msg,
 		"nick":nick,
 	})
+}
+
+// curl http://localhost:8080/hello/gh/figo/33/false -d "salary=100000000"
+func h_hello_gh(c *gin.Context){
+	env:=c.MustGet("env").(*Env)
+	fh,ph:=env.fh,env.ph
+	salary,name,age,bossFlag:=fh.Int("salary"),ph.String("name"),ph.Int("age"),ph.Bool("bossFlag")
+
+	c.JSON(http.StatusOK,gin.H{
+		"salary":salary,
+		"name":name,
+		"age":age,
+		"bossFlag":bossFlag,
+	})
+}
+
+func m_gh(c *gin.Context){
+	c.Set("env",&Env{
+		fh:gh.NewFormHelper(c),
+		ph:gh.NewParamHelper(c),
+	})
+	c.Next()
 }
