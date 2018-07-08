@@ -5,12 +5,14 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	"github.com/quexer/utee"
-	"github.com/icrowley/fake"
 	"github.com/figoxu/Figo"
+	"time"
+	"github.com/icrowley/fake"
 )
 
 var (
 	DB *gorm.DB
+	BMQ Figo.BatchMemQueue
 )
 
 func init() {
@@ -25,19 +27,38 @@ func init() {
 }
 
 type DataInfo struct {
-	Id   int
-	Name string
-	Language  string
+	Id       int
+	Name     string
+	Language string
 }
 
 func main() {
-	sb:=Figo.NewSqlBuffer()
+	BMQ=Figo.NewBatchMemQueue(10e5, 6, 1000, bacthWorker)
+	log.Println("Begin")
+	for i:=0;i<10e5;i++ {
+		BMQ.Enq(DataInfo{
+			Name:fake.FullName(),
+			Language:fake.Language(),
+		})
+	}
+	log.Println("END")
+	time.Sleep(time.Minute*time.Duration(2))
+}
+
+func bacthWorker(vs []interface{}) {
+	defer Figo.Catch()
+	if len(vs) <= 0 {
+		return
+	}
+	sb := Figo.NewSqlBuffer()
 	sb.Append("INSERT INTO data_infos(name,language) VALUES ")
-	for i:=0;i<1000;i++ {
-		if i>0 {
+	for i, v := range vs {
+		data := v.(DataInfo)
+		if i > 0 {
 			sb.Append(" , ")
 		}
-		sb.Append(" (?,?) ",fake.FullName(),fake.Language())
+		sb.Append(" (?,?) ", data.Name, data.Language)
 	}
-	DB.Exec(sb.SQL(),sb.Params()...)
+	DB.Exec(sb.SQL(), sb.Params()...)
+	log.Println("SQL RUN")
 }
