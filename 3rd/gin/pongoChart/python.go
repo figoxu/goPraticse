@@ -48,16 +48,7 @@ func getTableNames(drivername, database, username, password, host, port string) 
 	return strings.Split(resp, ",")
 }
 
-type ColumnInfo struct {
-	Comment       string `json:"comment"`
-	Name          string `json:"name"`
-	Nullable      bool   `json:"nullable"`
-	Default       string `json:"default"`
-	Autoincrement bool   `json:"autoincrement"`
-	Type          string `json:"type"`
-}
-
-func getColumn(tablename, drivername, database, username, password, host, port string) []ColumnInfo {
+func getColumn(tablename, drivername, database, username, password, host, port string) []TableInfo {
 
 	packParam := func(tablename string, drivername string, database string, username string, password string, host string, port string) *python.PyObject {
 		bArgs := python.PyTuple_New(7)
@@ -93,7 +84,7 @@ func getColumn(tablename, drivername, database, username, password, host, port s
 	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
 	resp := formatJson(rsp)
 
-	infoes := make([]ColumnInfo, 0)
+	infoes := make([]TableInfo, 0)
 	utee.Chk(json.Unmarshal([]byte(resp), &infoes))
 	return infoes
 }
