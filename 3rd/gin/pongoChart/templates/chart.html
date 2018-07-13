@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>报表</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/v-charts/lib/index.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/v-charts/lib/style.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body>
+<div id="app">
+    <el-select v-model="v_tag" placeholder="请选择报表类型">
+        <el-option
+                v-for="item in tagOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+    </el-select>
+    <el-select v-model="v_db" placeholder="请选择数据库">
+        <el-option
+                v-for="item in dbInfoOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+    </el-select>
+
+    <el-select v-model="v_dimension" placeholder="请选择维度">
+        <el-option
+                v-for="item in tableInfoOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+    </el-select>
+    <el-select v-model="v_measurement" placeholder="请选择度量">
+        <el-option
+                v-for="item in tableInfoOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+    </el-select>
+    <el-select v-model="v_op" placeholder="请选择算子">
+        <el-option
+                v-for="item in opOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+    </el-select>
+    <el-button type="info">生成报表</el-button>
+    <ve-line :data="chartData"></ve-line>
+</div>
+<script type="text/javascript">
+
+    var tagMap ={{ tagMap|safe }};
+    var dbInfoes ={{ dbInfoes|safe }};
+    var tableInfoes ={{ tableInfoes|safe }};
+    var opMap ={{ opMap|safe }};
+
+
+    var tagOption = [];
+    for (k in tagMap) {
+        v = tagMap[k];
+        tagOption[tagOption.length] = {
+            value: v,
+            label: k
+        }
+    }
+
+    var dbInfoOption = [];
+    for (var i = 0; i < dbInfoes.length; i++) {
+        dbInfo = dbInfoes[i];
+        dbInfoOption[dbInfoOption.length] = {
+            value: dbInfo.id,
+            label: dbInfo.name,
+        }
+    }
+
+    var tableInfoOption = [];
+    for (var i = 0; i < tableInfoes.length; i++) {
+        tableInfo = tableInfoes[i];
+        tableInfoOption[tableInfoOption.length] = {
+            value: tableInfo.id,
+            label: tableInfo.table_name,
+        }
+    }
+
+    var opOption = [];
+    for(k in opMap){
+        v = opMap[k];
+        opOption[opOption.length] = {
+            value: v,
+            label: k,
+        }
+    }
+</script>
+<script type="text/javascript">
+    vm = new Vue({
+        el: '#app',
+        data: {
+            tagOption:tagOption,
+            dbInfoOption:dbInfoOption,
+            tableInfoOption:tableInfoOption,
+            opOption:opOption,
+            v_tag:"",
+            v_db:"",
+            v_dimension:"",
+            v_measurement:"",
+            v_op:"",
+        },
+        created: function () {
+
+        },
+        methods: {
+
+        }
+    })
+</script>
+</body>
+</html>

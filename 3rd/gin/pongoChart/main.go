@@ -51,6 +51,10 @@ func mount() *gin.Engine {
 			db.POST("/list/:size/:pg",h_db_info_list)
 		}
 		admin.GET("/index",h_table_info_index)
+		chart:=admin.Group("/chart")
+		{
+			chart.GET("index",h_chart_define_index)
+		}
 	}
 	return r
 }

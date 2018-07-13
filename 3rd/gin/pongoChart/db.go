@@ -28,6 +28,12 @@ func (p *DbInfoDao) Save(dbInfo *DbInfo) {
 	p.db.Save(dbInfo)
 }
 
+func (p *DbInfoDao) GetAll() []DbInfo {
+	dbInfos := make([]DbInfo, 0)
+	p.db.Raw("SELECT * FROM db_info").Scan(&dbInfos)
+	return dbInfos
+}
+
 type TableInfo struct {
 	Id            int    `json:"id"`
 	TableName     string `json:"table_name"`
@@ -52,6 +58,12 @@ func NewTableInfoDao(db *gorm.DB) TableInfoDao {
 
 func (p *TableInfoDao) Save(tableInfo *TableInfo) {
 	p.db.Save(tableInfo)
+}
+
+func (p *TableInfoDao) GetAll() []TableInfo {
+	tableInfoes := make([]TableInfo, 0)
+	p.db.Raw("SELECT * FROM table_info").Scan(&tableInfoes)
+	return tableInfoes
 }
 
 type TCount struct {
