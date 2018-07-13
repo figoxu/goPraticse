@@ -21,6 +21,7 @@ func h_db_info_save(c *gin.Context) {
 		tableInfoes := getColumn(tableName, dbInfo)
 		for _, tableInfo := range tableInfoes {
 			tableInfo.DbId = dbInfo.Id
+			tableInfo.TableName = tableName
 			tableInfoDao.Save(&tableInfo)
 		}
 	}

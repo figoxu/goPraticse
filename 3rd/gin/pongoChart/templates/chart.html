@@ -21,7 +21,7 @@
                 :value="item.value">
         </el-option>
     </el-select>
-    <el-select v-model="v_db" placeholder="请选择数据库">
+    <el-select v-model="v_db" @change="dbChange" placeholder="请选择数据库">
         <el-option
                 v-for="item in dbInfoOption"
                 :key="item.value"
@@ -30,7 +30,7 @@
         </el-option>
     </el-select>
 
-    <el-select v-model="v_dimension" placeholder="请选择维度">
+    <el-select v-model="v_table" @change="tableChange" placeholder="请选择数据表">
         <el-option
                 v-for="item in tableInfoOption"
                 :key="item.value"
@@ -38,9 +38,17 @@
                 :value="item.value">
         </el-option>
     </el-select>
-    <el-select v-model="v_measurement" placeholder="请选择度量">
+    <el-select v-model="v_dimension" multiple placeholder="请选择维度">
         <el-option
-                v-for="item in tableInfoOption"
+                v-for="item in tableColumnOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+        </el-option>
+    </el-select>
+    <el-select v-model="v_measurement" multiple placeholder="请选择度量">
+        <el-option
+                v-for="item in tableColumnOption"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -83,17 +91,9 @@
         }
     }
 
-    var tableInfoOption = [];
-    for (var i = 0; i < tableInfoes.length; i++) {
-        tableInfo = tableInfoes[i];
-        tableInfoOption[tableInfoOption.length] = {
-            value: tableInfo.id,
-            label: tableInfo.table_name,
-        }
-    }
 
     var opOption = [];
-    for(k in opMap){
+    for (k in opMap) {
         v = opMap[k];
         opOption[opOption.length] = {
             value: v,
@@ -105,21 +105,60 @@
     vm = new Vue({
         el: '#app',
         data: {
-            tagOption:tagOption,
-            dbInfoOption:dbInfoOption,
-            tableInfoOption:tableInfoOption,
-            opOption:opOption,
-            v_tag:"",
-            v_db:"",
-            v_dimension:"",
-            v_measurement:"",
-            v_op:"",
+            tagOption: tagOption,
+            dbInfoOption: dbInfoOption,
+            tableInfoOption: [],
+            tableColumnOption: [],
+            opOption: opOption,
+            v_tag: "",
+            v_db: "",
+            v_table: "",
+            v_dimension: "",
+            v_measurement: "",
+            v_op: "",
         },
         created: function () {
 
         },
         methods: {
-
+            dbChange: function () {
+                console.log("hello>>>00001")
+                tableInfoOption=[];
+                for (var i = 0; i < tableInfoes.length; i++) {
+                    tableInfo = tableInfoes[i];
+                    if(tableInfo.db_id!=this.v_db){
+                        continue
+                    }
+                    foundFlag = false;
+                    for (var j = 0; j < tableInfoOption.length; j++) {
+                        if (tableInfo.table_name == tableInfoOption[j].label) {
+                            foundFlag = true;
+                        }
+                    }
+                    if (!foundFlag) {
+                        tableInfoOption[tableInfoOption.length] = {
+                            value: tableInfo.table_name,
+                            label: tableInfo.table_name,
+                        }
+                    }
+                }
+                console.log("hello>>>00002")
+                this.tableInfoOption = tableInfoOption;
+            },
+            tableChange: function () {
+                var tableColumnOption = [];
+                for (var i = 0; i < tableInfoes.length; i++) {
+                    tableInfo = tableInfoes[i];
+                    if(tableInfo.table_name!=this.v_table){
+                        continue
+                    }
+                    tableColumnOption[tableColumnOption.length] = {
+                        value: tableInfo.id,
+                        label: tableInfo.name,
+                    }
+                }
+                this.tableColumnOption = tableColumnOption;
+            }
         }
     })
 </script>

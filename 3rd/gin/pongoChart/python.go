@@ -86,8 +86,5 @@ func getColumn(tablename string, dbInfo DbInfo) []TableInfo {
 
 	infoes := make([]TableInfo, 0)
 	utee.Chk(json.Unmarshal([]byte(resp), &infoes))
-	for _, info := range infoes {
-		info.TableName = tablename
-	}
 	return infoes
 }
