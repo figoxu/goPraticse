@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据库管理</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body>
+
+<div id="app">
+    <el-table :data="tableData" :row-class-name="tableRowClassName" style="width: 100%">
+        <el-table-column prop="id" label="ID"></el-table-column>
+        <el-table-column prop="comment" label="说明"></el-table-column>
+        <el-table-column prop="name" label="名称"></el-table-column>
+        <el-table-column prop="nullable" label="是否允许为空"></el-table-column>
+        <el-table-column prop="default" label="默认值"></el-table-column>
+        <el-table-column prop="autoincrement" label="是否自增"></el-table-column>
+        <el-table-column prop="type" label="数据类型"></el-table-column>
+    </el-table>
+    <div class="block">
+        <el-pagination
+                layout="prev, pager, next"
+                @current-change="pg_change"
+                :page-count="totalPg">
+        </el-pagination>
+    </div>
+</div>
+<script type="text/javascript">
+
+    vm = new Vue({
+        el: '#app',
+        data: {
+            "activeIndex": "conflog",
+            totalPg: 0,
+            currentPg: 1,
+            tableData: [],
+            errFlag: false,
+            cids: [],
+            options: {{ confs|safe }},
+        },
+        created: function () {
+            this.pg_change(this.currentPg)
+        },
+        methods: {
+            pg_change: function (pg) {
+                this.currentPg = pg
+                that = this
+                this.$http({
+                    url: '/admin/table_info/list/20/' + pg,
+                    method: 'POST',
+                    body: JSON.stringify({ErrFlag:that.errFlag,Cids:that.cids})
+                }).then(function (response) {
+                    var d = response.data;
+                    that.tableData = d.data;
+                    that.totalPg = d.totalPg;
+                });
+            },
+            reload:function () {
+                this.pg_change(1)
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

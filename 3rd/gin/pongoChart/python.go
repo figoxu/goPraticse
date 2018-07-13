@@ -30,35 +30,35 @@ func ImportModule(dir, name string) *python.PyObject {
 	return python.PyImport_ImportModule(name)        // return __import__(name)
 }
 
-func getTableNames(drivername, database, username, password, host, port string) []string {
-	packParam := func(drivername string, database string, username string, password string, host string, port string) *python.PyObject {
+func getTableNames(dbInfo DbInfo) []string {
+	packParam := func() *python.PyObject {
 		bArgs := python.PyTuple_New(6)
-		python.PyTuple_SetItem(bArgs, 0, PyStr(drivername))
-		python.PyTuple_SetItem(bArgs, 1, PyStr(database))
-		python.PyTuple_SetItem(bArgs, 2, PyStr(username))
-		python.PyTuple_SetItem(bArgs, 3, PyStr(password))
-		python.PyTuple_SetItem(bArgs, 4, PyStr(host))
-		python.PyTuple_SetItem(bArgs, 5, PyStr(port))
+		python.PyTuple_SetItem(bArgs, 0, PyStr(dbInfo.Drivername))
+		python.PyTuple_SetItem(bArgs, 1, PyStr(dbInfo.Database))
+		python.PyTuple_SetItem(bArgs, 2, PyStr(dbInfo.Username))
+		python.PyTuple_SetItem(bArgs, 3, PyStr(dbInfo.Password))
+		python.PyTuple_SetItem(bArgs, 4, PyStr(dbInfo.Host))
+		python.PyTuple_SetItem(bArgs, 5, PyStr(dbInfo.Port))
 		return bArgs
 	}
 	getTableNamesFunc := metaModule.GetAttrString("get_table_names")
-	bArgs := packParam(drivername, database, username, password, host, port)
+	bArgs := packParam()
 	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
 	resp := GoStr(rsp)
 	return strings.Split(resp, ",")
 }
 
-func getColumn(tablename, drivername, database, username, password, host, port string) []TableInfo {
+func getColumn(tablename string, dbInfo DbInfo) []TableInfo {
 
-	packParam := func(tablename string, drivername string, database string, username string, password string, host string, port string) *python.PyObject {
+	packParam := func() *python.PyObject {
 		bArgs := python.PyTuple_New(7)
 		python.PyTuple_SetItem(bArgs, 0, PyStr(tablename))
-		python.PyTuple_SetItem(bArgs, 1, PyStr(drivername))
-		python.PyTuple_SetItem(bArgs, 2, PyStr(database))
-		python.PyTuple_SetItem(bArgs, 3, PyStr(username))
-		python.PyTuple_SetItem(bArgs, 4, PyStr(password))
-		python.PyTuple_SetItem(bArgs, 5, PyStr(host))
-		python.PyTuple_SetItem(bArgs, 6, PyStr(port))
+		python.PyTuple_SetItem(bArgs, 1, PyStr(dbInfo.Drivername))
+		python.PyTuple_SetItem(bArgs, 2, PyStr(dbInfo.Database))
+		python.PyTuple_SetItem(bArgs, 3, PyStr(dbInfo.Username))
+		python.PyTuple_SetItem(bArgs, 4, PyStr(dbInfo.Password))
+		python.PyTuple_SetItem(bArgs, 5, PyStr(dbInfo.Host))
+		python.PyTuple_SetItem(bArgs, 6, PyStr(dbInfo.Port))
 		return bArgs
 	}
 	formatJson := func(rsp *python.PyObject) string {
@@ -80,11 +80,14 @@ func getColumn(tablename, drivername, database, username, password, host, port s
 	}
 
 	getTableNamesFunc := metaModule.GetAttrString("get_columns")
-	bArgs := packParam(tablename, drivername, database, username, password, host, port)
+	bArgs := packParam()
 	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
 	resp := formatJson(rsp)
 
 	infoes := make([]TableInfo, 0)
 	utee.Chk(json.Unmarshal([]byte(resp), &infoes))
+	for _, info := range infoes {
+		info.TableName = tablename
+	}
 	return infoes
 }
