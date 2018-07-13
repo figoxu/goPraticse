@@ -20,7 +20,3 @@ def get_columns(tablename,drivername,database,username,password,host,port):
     inspector = inspect(engine)
     return str(inspector.get_columns(tablename))
 
-
-def test(drivername,database,username,password,host,port):
-    return drivername+','+database+','+username+','+password+','+host+','+port
-

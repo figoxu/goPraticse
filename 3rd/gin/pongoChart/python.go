@@ -3,6 +3,9 @@ package main
 import (
 	"github.com/sbinet/go-python"
 	"strings"
+	"regexp"
+	"github.com/segmentio/objconv/json"
+	"github.com/quexer/utee"
 )
 
 var (
@@ -39,4 +42,49 @@ func getTableNames(drivername, database, username, password, host, port string) 
 	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
 	resp := GoStr(rsp)
 	return strings.Split(resp, ",")
+}
+
+type ColumnInfo struct {
+	Comment       string `json:"comment"`
+	Name          string `json:"name"`
+	Nullable      bool   `json:"nullable"`
+	Default       string `json:"default"`
+	Autoincrement bool   `json:"autoincrement"`
+	Type          string `json:"type"`
+}
+
+func getColumn(tablename, drivername, database, username, password, host, port string) []ColumnInfo {
+	formatJson:=func (rsp *python.PyObject) string {
+		resp := GoStr(rsp)
+		resp = strings.Replace(resp, "'", "\"", -1)
+		resp = strings.Replace(resp, "None", "\"\"", -1)
+		resp = strings.Replace(resp, "u\"", "\"", -1)
+		resp = strings.Replace(resp, "VARCHAR()", "\"string\"", -1)
+		resp = strings.Replace(resp, "TIMESTAMP()", "\"time\"", -1)
+		resp = strings.Replace(resp, "BIGINT()", "\"int\"", -1)
+		resp = strings.Replace(resp, "False", "false", -1)
+		resp = strings.Replace(resp, "True", "true", -1)
+		vs := regexp.MustCompile(`next.*\)`).FindAllString(resp, -1)
+		for _, v := range vs {
+			v2 := strings.Replace(v, "\"", "'", -1)
+			resp = strings.Replace(resp, v, v2, -1)
+		}
+		return resp
+	}
+
+	getTableNamesFunc := metaModule.GetAttrString("get_columns")
+	bArgs := python.PyTuple_New(7)
+	python.PyTuple_SetItem(bArgs, 0, PyStr(tablename))
+	python.PyTuple_SetItem(bArgs, 1, PyStr(drivername))
+	python.PyTuple_SetItem(bArgs, 2, PyStr(database))
+	python.PyTuple_SetItem(bArgs, 3, PyStr(username))
+	python.PyTuple_SetItem(bArgs, 4, PyStr(password))
+	python.PyTuple_SetItem(bArgs, 5, PyStr(host))
+	python.PyTuple_SetItem(bArgs, 6, PyStr(port))
+	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
+	resp := formatJson(rsp)
+
+	infoes := make([]ColumnInfo, 0)
+	utee.Chk(json.Unmarshal([]byte(resp), &infoes))
+	return infoes
 }
