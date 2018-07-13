@@ -31,14 +31,18 @@ func ImportModule(dir, name string) *python.PyObject {
 }
 
 func getTableNames(drivername, database, username, password, host, port string) []string {
+	packParam := func(drivername string, database string, username string, password string, host string, port string) *python.PyObject {
+		bArgs := python.PyTuple_New(6)
+		python.PyTuple_SetItem(bArgs, 0, PyStr(drivername))
+		python.PyTuple_SetItem(bArgs, 1, PyStr(database))
+		python.PyTuple_SetItem(bArgs, 2, PyStr(username))
+		python.PyTuple_SetItem(bArgs, 3, PyStr(password))
+		python.PyTuple_SetItem(bArgs, 4, PyStr(host))
+		python.PyTuple_SetItem(bArgs, 5, PyStr(port))
+		return bArgs
+	}
 	getTableNamesFunc := metaModule.GetAttrString("get_table_names")
-	bArgs := python.PyTuple_New(6)
-	python.PyTuple_SetItem(bArgs, 0, PyStr(drivername))
-	python.PyTuple_SetItem(bArgs, 1, PyStr(database))
-	python.PyTuple_SetItem(bArgs, 2, PyStr(username))
-	python.PyTuple_SetItem(bArgs, 3, PyStr(password))
-	python.PyTuple_SetItem(bArgs, 4, PyStr(host))
-	python.PyTuple_SetItem(bArgs, 5, PyStr(port))
+	bArgs := packParam(drivername, database, username, password, host, port)
 	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
 	resp := GoStr(rsp)
 	return strings.Split(resp, ",")
@@ -54,7 +58,19 @@ type ColumnInfo struct {
 }
 
 func getColumn(tablename, drivername, database, username, password, host, port string) []ColumnInfo {
-	formatJson:=func (rsp *python.PyObject) string {
+
+	packParam := func(tablename string, drivername string, database string, username string, password string, host string, port string) *python.PyObject {
+		bArgs := python.PyTuple_New(7)
+		python.PyTuple_SetItem(bArgs, 0, PyStr(tablename))
+		python.PyTuple_SetItem(bArgs, 1, PyStr(drivername))
+		python.PyTuple_SetItem(bArgs, 2, PyStr(database))
+		python.PyTuple_SetItem(bArgs, 3, PyStr(username))
+		python.PyTuple_SetItem(bArgs, 4, PyStr(password))
+		python.PyTuple_SetItem(bArgs, 5, PyStr(host))
+		python.PyTuple_SetItem(bArgs, 6, PyStr(port))
+		return bArgs
+	}
+	formatJson := func(rsp *python.PyObject) string {
 		resp := GoStr(rsp)
 		resp = strings.Replace(resp, "'", "\"", -1)
 		resp = strings.Replace(resp, "None", "\"\"", -1)
@@ -73,14 +89,7 @@ func getColumn(tablename, drivername, database, username, password, host, port s
 	}
 
 	getTableNamesFunc := metaModule.GetAttrString("get_columns")
-	bArgs := python.PyTuple_New(7)
-	python.PyTuple_SetItem(bArgs, 0, PyStr(tablename))
-	python.PyTuple_SetItem(bArgs, 1, PyStr(drivername))
-	python.PyTuple_SetItem(bArgs, 2, PyStr(database))
-	python.PyTuple_SetItem(bArgs, 3, PyStr(username))
-	python.PyTuple_SetItem(bArgs, 4, PyStr(password))
-	python.PyTuple_SetItem(bArgs, 5, PyStr(host))
-	python.PyTuple_SetItem(bArgs, 6, PyStr(port))
+	bArgs := packParam(tablename, drivername, database, username, password, host, port)
 	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
 	resp := formatJson(rsp)
 
