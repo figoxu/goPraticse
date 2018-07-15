@@ -13,7 +13,7 @@
 </head>
 <body>
 <div id="app">
-    <el-select v-model="v_tag" placeholder="请选择报表类型">
+    <el-select v-model="v_tag" @change="print_tag" placeholder="请选择报表类型">
         <el-option
                 v-for="item in tagOption"
                 :key="item.value"
@@ -63,11 +63,11 @@
         </el-option>
     </el-select>
     <el-button type="info" @click="chartLoad">生成报表</el-button>
-
-
-    <ve-line :data="chartData"></ve-line>
-
-
+    {% for item in tags %}
+    <div v-if="v_tag === '{{ item }}'">
+        <{{ item }} :data="chartData"></{{ item }}}>
+    </div>
+    {% endfor %}
 </div>
 <script type="text/javascript">
 
@@ -190,6 +190,11 @@
                 }, function () {
                     loadingInstance.close();
                 });
+            },
+            print_tag:function () {
+                console.log(">>>>>>>")
+                console.log(this.v_tag)
+                console.log("<<<<<<<")
             }
         }
     })

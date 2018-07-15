@@ -31,11 +31,16 @@ func h_chart_index(c *gin.Context) {
 func h_chart_define_index(c *gin.Context) {
 	dbInfoDao, tableInfoDao := db.NewDbInfoDao(sqlite_db), db.NewTableInfoDao(sqlite_db)
 	dbInfoes, tableInfoes := dbInfoDao.GetAll(), tableInfoDao.GetAll()
+	tags := make([]string, 0)
+	for _, v := range tagMap {
+		tags = append(tags, v)
+	}
 	c.HTML(200, "chart.html", pongo2.Context{
 		"tagMap":      Figo.JsonString(tagMap),
 		"dbInfoes":    Figo.JsonString(dbInfoes),
 		"tableInfoes": Figo.JsonString(tableInfoes),
 		"opMap":       Figo.JsonString(operatorMap),
+		"tags": tags,
 	})
 }
 
@@ -85,7 +90,7 @@ func h_chart_query(c *gin.Context) {
 		row := ChartRow{}
 		for k, v := range d {
 			row[k] = v
-			columns = append(columns,k)
+			columns = append(columns, k)
 		}
 		results = append(results, row)
 	}
