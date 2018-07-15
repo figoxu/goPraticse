@@ -4,6 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/flosch/pongo2"
 	"github.com/figoxu/Figo"
+	"github.com/quexer/utee"
+	"fmt"
+	"net/http"
+	"github.com/figoxu/goPraticse/3rd/gin/pongoChart/common/db"
+	"github.com/figoxu/goPraticse/3rd/gin/pongoChart/common/pg"
 )
 
 var (
@@ -25,7 +30,7 @@ func h_chart_index(c *gin.Context) {
 }
 
 func h_chart_define_index(c *gin.Context) {
-	dbInfoDao, tableInfoDao := NewDbInfoDao(sqlite_db), NewTableInfoDao(sqlite_db)
+	dbInfoDao, tableInfoDao := db.NewDbInfoDao(sqlite_db), db.NewTableInfoDao(sqlite_db)
 	dbInfoes, tableInfoes := dbInfoDao.GetAll(), tableInfoDao.GetAll()
 	c.HTML(200, "chart.html", pongo2.Context{
 		"tagMap":      Figo.JsonString(tagMap),
@@ -33,4 +38,76 @@ func h_chart_define_index(c *gin.Context) {
 		"tableInfoes": Figo.JsonString(tableInfoes),
 		"opMap":       Figo.JsonString(operatorMap),
 	})
+}
+
+type ChartRow map[string]interface{}
+
+type ChartQueryResult struct {
+	Columns []string   `json:"columns"`
+	Rows    []ChartRow `json:"rows"`
+}
+
+func h_chart_query(c *gin.Context) {
+	dbInfoDao,tableInfoDao := db.NewDbInfoDao(sqlite_db),db.NewTableInfoDao(sqlite_db)
+	env := c.MustGet("env").(*Env)
+	fh := env.fh
+	v_db, v_table, v_op := fh.Int("v_db"), fh.String("v_table"), fh.String("v_op")
+	v_dimensions, v_measurements := fh.IntArr("v_dimension", ","), fh.IntArr("v_measurement", ",")
+
+	dbInfo := dbInfoDao.GetByKey(v_db)
+
+	dimensions, measurements, columns := make([]DbColumn, 0), make([]DbColumn, 0), make([]string, 0)
+	for _, dimension := range v_dimensions {
+		tableInfo:=tableInfoDao.GetByKey(dimension)
+		dimensions = append(dimensions, DbColumn{
+			Column:   tableInfo.Name,
+			ShowName: tableInfo.Name,
+			Operator: "",
+		})
+		columns = append(columns, tableInfo.Name)
+	}
+	for _, measurement := range v_measurements {
+		tableInfo:=tableInfoDao.GetByKey(measurement)
+		measurements = append(measurements, DbColumn{
+			Column:   tableInfo.Name,
+			ShowName: tableInfo.Name,
+			Operator: v_op,
+		})
+		columns = append(columns, tableInfo.Name)
+	}
+	columns=utee.UniqueStr(columns)
+	cd := ChartDefine{
+		Dimensions:   dimensions,
+		Measurements: measurements,
+		Table:        v_table,
+	}
+	chartSql := cd.GenSql()
+	results := make([]ChartRow, 0)
+	//buildDbCon(dbInfo).Raw(chartSql).Scan(&results)
+
+//https://github.com/elgs/gosqljson
+
+	rows,err:=pg.BuildDbCon(dbInfo).Raw(chartSql).Rows()
+	utee.Chk(err)
+	for  rows.Next() {
+		chartRow:=make(ChartRow)
+		columns,err:=rows.Columns()
+		fmt.Println(Figo.JsonString(columns))
+		utee.Chk(err)
+		//rows.Scan()
+
+		result:=make([]string,len(columns))
+		rows.Scan(&result)
+		fmt.Println(Figo.JsonString(result))
+		for i,column:=range columns {
+			chartRow[column]=result[i]
+		}
+		results = append(results,chartRow)
+	}
+
+	chartQueryResult := ChartQueryResult{
+		Columns: columns,
+		Rows:    results,
+	}
+	c.JSON(http.StatusOK, chartQueryResult)
 }

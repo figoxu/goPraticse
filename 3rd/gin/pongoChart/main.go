@@ -10,6 +10,7 @@ import (
 	"github.com/quexer/utee"
 	"time"
 	"github.com/figoxu/gh"
+	"github.com/figoxu/goPraticse/3rd/gin/pongoChart/common/db"
 )
 
 var (
@@ -19,14 +20,14 @@ var (
 func init() {
 	driver := "sqlite3"
 	dbLoc := "./db/test.db"
-	db, err := gorm.Open(driver, dbLoc)
+	sqlitedb, err := gorm.Open(driver, dbLoc)
 	utee.Chk(err)
-	db.DB().SetConnMaxLifetime(time.Minute * 5)
-	db.DB().SetMaxIdleConns(0)
-	db.DB().SetMaxOpenConns(5)
-	db.SingularTable(true)
-	db.Debug().AutoMigrate(&DbInfo{}, &TableInfo{})
-	sqlite_db = db
+	sqlitedb.DB().SetConnMaxLifetime(time.Minute * 5)
+	sqlitedb.DB().SetMaxIdleConns(0)
+	sqlitedb.DB().SetMaxOpenConns(5)
+	sqlitedb.SingularTable(true)
+	sqlitedb.Debug().AutoMigrate(&db.DbInfo{}, &db.TableInfo{})
+	sqlite_db = sqlitedb
 }
 
 func main() {
@@ -53,7 +54,8 @@ func mount() *gin.Engine {
 		admin.GET("/index",h_table_info_index)
 		chart:=admin.Group("/chart")
 		{
-			chart.GET("index",h_chart_define_index)
+			chart.GET("/index", h_chart_define_index)
+			chart.POST("/query",h_chart_query)
 		}
 	}
 	return r

@@ -1,4 +1,4 @@
-package main
+package db
 
 import "github.com/jinzhu/gorm"
 
@@ -34,6 +34,12 @@ func (p *DbInfoDao) GetAll() []DbInfo {
 	return dbInfos
 }
 
+func (p *DbInfoDao) GetByKey(id int) DbInfo {
+	dbInfo := DbInfo{}
+	p.db.Raw("SELECT * FROM db_info WHERE id=?", id).Scan(&dbInfo)
+	return dbInfo
+}
+
 type TableInfo struct {
 	Id            int    `json:"id"`
 	TableName     string `json:"table_name"`
@@ -64,6 +70,12 @@ func (p *TableInfoDao) GetAll() []TableInfo {
 	tableInfoes := make([]TableInfo, 0)
 	p.db.Raw("SELECT * FROM table_info").Scan(&tableInfoes)
 	return tableInfoes
+}
+
+func (p *TableInfoDao) GetByKey(id int) TableInfo {
+	tableInfo := TableInfo{}
+	p.db.Raw("SELECT * FROM table_info WHERE id=?", id).Scan(&tableInfo)
+	return tableInfo
 }
 
 type TCount struct {

@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"github.com/segmentio/objconv/json"
 	"github.com/quexer/utee"
+	"github.com/figoxu/goPraticse/3rd/gin/pongoChart/common/db"
 )
 
 var (
@@ -30,7 +31,7 @@ func ImportModule(dir, name string) *python.PyObject {
 	return python.PyImport_ImportModule(name)        // return __import__(name)
 }
 
-func getTableNames(dbInfo DbInfo) []string {
+func getTableNames(dbInfo db.DbInfo) []string {
 	packParam := func() *python.PyObject {
 		bArgs := python.PyTuple_New(6)
 		python.PyTuple_SetItem(bArgs, 0, PyStr(dbInfo.Drivername))
@@ -48,7 +49,7 @@ func getTableNames(dbInfo DbInfo) []string {
 	return strings.Split(resp, ",")
 }
 
-func getColumn(tablename string, dbInfo DbInfo) []TableInfo {
+func getColumn(tablename string, dbInfo db.DbInfo) []db.TableInfo {
 
 	packParam := func() *python.PyObject {
 		bArgs := python.PyTuple_New(7)
@@ -84,7 +85,7 @@ func getColumn(tablename string, dbInfo DbInfo) []TableInfo {
 	rsp := getTableNamesFunc.Call(bArgs, python.Py_None)
 	resp := formatJson(rsp)
 
-	infoes := make([]TableInfo, 0)
+	infoes := make([]db.TableInfo, 0)
 	utee.Chk(json.Unmarshal([]byte(resp), &infoes))
 	return infoes
 }

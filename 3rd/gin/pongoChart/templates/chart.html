@@ -62,8 +62,15 @@
                 :value="item.value">
         </el-option>
     </el-select>
-    <el-button type="info">生成报表</el-button>
+    <el-button type="info" @click="chartLoad">生成报表</el-button>
+
+
     <ve-line :data="chartData"></ve-line>
+
+
+
+
+
 </div>
 <script type="text/javascript">
 
@@ -122,7 +129,6 @@
         },
         methods: {
             dbChange: function () {
-                console.log("hello>>>00001")
                 tableInfoOption=[];
                 for (var i = 0; i < tableInfoes.length; i++) {
                     tableInfo = tableInfoes[i];
@@ -142,7 +148,6 @@
                         }
                     }
                 }
-                console.log("hello>>>00002")
                 this.tableInfoOption = tableInfoOption;
             },
             tableChange: function () {
@@ -158,6 +163,33 @@
                     }
                 }
                 this.tableColumnOption = tableColumnOption;
+            },
+            chartLoad:function () {
+                var loadingInstance = ELEMENT.Loading.service({
+                    fullscreen: true ,
+                    text:"努力计算和加载报表数据",
+                });
+                var that=this;
+                // v_tag: "",
+                this.$http({
+                    url: '/admin/chart/query' ,
+                    method: 'POST',
+                    body: {
+                        "v_db": that.v_db,
+                        "v_table": that.v_table,
+                        "v_op": that.v_op,
+                        "v_dimension": that.v_dimension.join(","),
+                        "v_measurement": that.v_measurement.join(","),
+                    },
+                    emulateJSON: true,
+                }).then(function (response) {
+                    loadingInstance.close();
+                    var d = response.data;
+                    that.tableData = d.data;
+                    that.totalPg = d.totalPg;
+                }, function () {
+                    loadingInstance.close();
+                });
             }
         }
     })

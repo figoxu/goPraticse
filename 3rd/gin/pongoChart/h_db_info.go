@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/flosch/pongo2"
 	"net/http"
+	"github.com/figoxu/goPraticse/3rd/gin/pongoChart/common/db"
 )
 
 func h_db_info_index(c *gin.Context) {
@@ -11,10 +12,9 @@ func h_db_info_index(c *gin.Context) {
 }
 
 func h_db_info_save(c *gin.Context) {
-	dbInfo := DbInfo{}
+	dbInfo := db.DbInfo{}
 	c.BindJSON(&dbInfo)
-	dbInfoDao := NewDbInfoDao(sqlite_db)
-	tableInfoDao := NewTableInfoDao(sqlite_db)
+	dbInfoDao, tableInfoDao := db.NewDbInfoDao(sqlite_db), db.NewTableInfoDao(sqlite_db)
 	dbInfoDao.Save(&dbInfo)
 	tableNames := getTableNames(dbInfo)
 	for _, tableName := range tableNames {
@@ -31,7 +31,7 @@ func h_db_info_list(c *gin.Context) {
 	env := c.MustGet("env").(*Env)
 	ph := env.ph
 	pg, size := ph.Int("pg"), ph.Int("size")
-	count := &TCount{}
+	count := &db.TCount{}
 	sqlite_db.Raw("SELECT count(*) as count FROM db_info").Scan(count)
 	totalPg := (count.Count + size - 1) / size
 	if pg <= 0 {
@@ -40,13 +40,13 @@ func h_db_info_list(c *gin.Context) {
 		pg = totalPg
 	}
 	start, limit := (pg-1)*size, size
-	confs := make([]DbInfo, 0)
-	sqlite_db.Raw("SELECT * FROM db_info ORDER BY id DESC LIMIT ?,?", start, limit).Scan(&confs)
+	dbInfos := make([]db.DbInfo, 0)
+	sqlite_db.Raw("SELECT * FROM db_info ORDER BY id DESC LIMIT ?,?", start, limit).Scan(&dbInfos)
 
 	result := make(map[string]interface{})
 	result["total"] = count.Count
 	result["totalPg"] = totalPg
 	result["curPg"] = pg
-	result["data"] = confs
+	result["data"] = dbInfos
 	c.JSON(http.StatusOK, result)
 }
