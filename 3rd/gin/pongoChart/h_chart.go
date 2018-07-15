@@ -63,7 +63,6 @@ func h_chart_query(c *gin.Context) {
 			ShowName: tableInfo.Name,
 			Operator: "",
 		})
-		columns = append(columns, tableInfo.Name)
 	}
 	for _, measurement := range v_measurements {
 		tableInfo := tableInfoDao.GetByKey(measurement)
@@ -72,9 +71,7 @@ func h_chart_query(c *gin.Context) {
 			ShowName: tableInfo.Name,
 			Operator: v_op,
 		})
-		columns = append(columns, tableInfo.Name)
 	}
-	columns = utee.UniqueStr(columns)
 	cd := ChartDefine{
 		Dimensions:   dimensions,
 		Measurements: measurements,
@@ -88,9 +85,11 @@ func h_chart_query(c *gin.Context) {
 		row := ChartRow{}
 		for k, v := range d {
 			row[k] = v
+			columns = append(columns,k)
 		}
 		results = append(results, row)
 	}
+	columns = utee.UniqueStr(columns)
 	chartQueryResult := ChartQueryResult{
 		Columns: columns,
 		Rows:    results,

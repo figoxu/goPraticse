@@ -68,9 +68,6 @@
     <ve-line :data="chartData"></ve-line>
 
 
-
-
-
 </div>
 <script type="text/javascript">
 
@@ -123,16 +120,20 @@
             v_dimension: "",
             v_measurement: "",
             v_op: "",
+            chartData: {
+                "columns": [],
+                "rows": []
+            }
         },
         created: function () {
 
         },
         methods: {
             dbChange: function () {
-                tableInfoOption=[];
+                tableInfoOption = [];
                 for (var i = 0; i < tableInfoes.length; i++) {
                     tableInfo = tableInfoes[i];
-                    if(tableInfo.db_id!=this.v_db){
+                    if (tableInfo.db_id != this.v_db) {
                         continue
                     }
                     foundFlag = false;
@@ -154,7 +155,7 @@
                 var tableColumnOption = [];
                 for (var i = 0; i < tableInfoes.length; i++) {
                     tableInfo = tableInfoes[i];
-                    if(tableInfo.table_name!=this.v_table){
+                    if (tableInfo.table_name != this.v_table) {
                         continue
                     }
                     tableColumnOption[tableColumnOption.length] = {
@@ -164,15 +165,14 @@
                 }
                 this.tableColumnOption = tableColumnOption;
             },
-            chartLoad:function () {
+            chartLoad: function () {
                 var loadingInstance = ELEMENT.Loading.service({
-                    fullscreen: true ,
-                    text:"努力计算和加载报表数据",
+                    fullscreen: true,
+                    text: "努力计算和加载报表数据",
                 });
-                var that=this;
-                // v_tag: "",
+                var that = this;
                 this.$http({
-                    url: '/admin/chart/query' ,
+                    url: '/admin/chart/query',
                     method: 'POST',
                     body: {
                         "v_db": that.v_db,
@@ -185,8 +185,8 @@
                 }).then(function (response) {
                     loadingInstance.close();
                     var d = response.data;
-                    that.tableData = d.data;
-                    that.totalPg = d.totalPg;
+                    that.chartData.columns = d.columns;
+                    that.chartData.rows = d.rows;
                 }, function () {
                     loadingInstance.close();
                 });
