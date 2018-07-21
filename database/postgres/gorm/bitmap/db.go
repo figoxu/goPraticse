@@ -56,6 +56,12 @@ type BitUserFriendDao struct {
 	db *gorm.DB
 }
 
+func NewBitUserFriendDao(db *gorm.DB) BitUserFriendDao {
+	return BitUserFriendDao{
+		db: db,
+	}
+}
+
 func (p *BitUserFriendDao) Save(bitUserFriend *BitUserFriend) {
 	p.db.Save(bitUserFriend)
 }
