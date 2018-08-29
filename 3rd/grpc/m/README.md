@@ -24,3 +24,4 @@ protoc --proto_path=IMPORT_PATH --cpp_out=DST_DIR --java_out=DST_DIR --python_ou
 ```
 #参考资料
 * protobuff资料 https://developers.google.com/protocol-buffers/
+* Protobuf语法 https://segmentfault.com/a/1190000007917576
