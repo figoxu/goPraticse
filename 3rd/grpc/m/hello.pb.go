@@ -18,6 +18,11 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 
+import (
+	context "golang.org/x/net/context"
+	grpc "google.golang.org/grpc"
+)
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
@@ -50,6 +55,73 @@ func (*HelloResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []i
 func init() {
 	proto.RegisterType((*HelloRequest)(nil), "hello.HelloRequest")
 	proto.RegisterType((*HelloResponse)(nil), "hello.HelloResponse")
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion1
+
+// Client API for Hello service
+
+type HelloClient interface {
+	// 定义SayHello方法
+	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
+}
+
+type helloClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewHelloClient(cc *grpc.ClientConn) HelloClient {
+	return &helloClient{cc}
+}
+
+func (c *helloClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error) {
+	out := new(HelloResponse)
+	err := grpc.Invoke(ctx, "/hello.Hello/SayHello", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Hello service
+
+type HelloServer interface {
+	// 定义SayHello方法
+	SayHello(context.Context, *HelloRequest) (*HelloResponse, error)
+}
+
+func RegisterHelloServer(s *grpc.Server, srv HelloServer) {
+	s.RegisterService(&_Hello_serviceDesc, srv)
+}
+
+func _Hello_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+	in := new(HelloRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	out, err := srv.(HelloServer).SayHello(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+var _Hello_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "hello.Hello",
+	HandlerType: (*HelloServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SayHello",
+			Handler:    _Hello_SayHello_Handler,
+		},
+	},
+	Streams: []grpc.StreamDesc{},
 }
 
 var fileDescriptor0 = []byte{

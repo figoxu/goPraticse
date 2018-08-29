@@ -1,6 +1,6 @@
 #编译命令
 ```
-protoc --go_out=./ ./hello.proto
+protoc -I . --go_out=plugins=grpc:. ./hello.proto
 ```
 #帮助查看
 ```
