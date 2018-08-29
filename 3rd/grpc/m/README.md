@@ -1,3 +1,15 @@
+#安装grpc
+```
+curl -fsSL https://goo.gl/getgrpc | bash -s -- --with-plugins
+或
+brew tap grpc/grpc
+brew install --with-plugins grpc
+```
+#更新依赖的go项目
+```
+go get -u google.golang.org/grpc
+go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+```
 #编译命令
 ```
 protoc -I . --go_out=plugins=grpc:. ./hello.proto

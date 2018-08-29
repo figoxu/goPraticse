@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 	pb "github.com/figoxu/goPraticse/3rd/grpc/m"
 	"context"
+	"log"
 )
 
 const (
@@ -19,6 +20,7 @@ func main() {
 	requestParam := &pb.HelloRequest{Name: "gRPC"}
 	res, err := client.SayHello(context.Background(), requestParam)
 	chk(err)
+	log.Println(res.Message)
 	grpclog.Info(res.Message)
 }
 

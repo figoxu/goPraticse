@@ -7,6 +7,7 @@ import (
 	"net"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc"
+	"log"
 )
 
 const (
@@ -19,6 +20,7 @@ func main() {
 	s := grpc.NewServer()
 	pb.RegisterHelloServer(s, HelloService)
 	grpclog.Info("Listen on" + Address)
+	log.Println("Listen on" + Address)
 	s.Serve(listen)
 }
 
@@ -31,6 +33,7 @@ var HelloService = helloService{}
 func (h helloService) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloResponse, error) {
 	resp := new(pb.HelloResponse)
 	resp.Message = fmt.Sprintf("Hello %s.", in.Name)
+	log.Println("被调用：",resp.Message)
 	return resp, nil
 }
 
