@@ -27,10 +27,10 @@ protoc --proto_path=IMPORT_PATH --cpp_out=DST_DIR --java_out=DST_DIR --python_ou
 * Protobuf语法 https://segmentfault.com/a/1190000007917576
 
 # 生成接口文档
-* https://github.com/sourcegraph/prototools/blob/master/README.doc.md
+* https://github.com/pseudomuto/protoc-gen-doc/
 ```
 go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 protoc --doc_opt=<FORMAT>|<TEMPLATE_FILENAME>,<OUT_FILENAME>
 FORMAT: docbook, html, markdown or json
-范例: protoc --doc_out=./doc --doc_opt=html,index.html ./hello.proto 
+范例: protoc --doc_out=./doc --doc_opt=html,index.html ./hello.proto
 ```
