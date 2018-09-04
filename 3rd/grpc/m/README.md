@@ -32,5 +32,7 @@ protoc --proto_path=IMPORT_PATH --cpp_out=DST_DIR --java_out=DST_DIR --python_ou
 go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 protoc --doc_opt=<FORMAT>|<TEMPLATE_FILENAME>,<OUT_FILENAME>
 FORMAT: docbook, html, markdown or json
-范例: protoc --doc_out=./doc --doc_opt=html,index.html ./hello.proto
+范例:
+protoc --doc_out=./doc --doc_opt=html,index.html ./hello.proto
+protoc --doc_out=./doc --doc_opt=markdown,index.md ./hello.proto
 ```
