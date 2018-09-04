@@ -23,6 +23,7 @@ protoc --help
 protoc --proto_path=IMPORT_PATH --cpp_out=DST_DIR --java_out=DST_DIR --python_out=DST_DIR --go_out=DST_DIR --ruby_out=DST_DIR --javanano_out=DST_DIR --objc_out=DST_DIR --csharp_out=DST_DIR path/to/file.proto
 ```
 #参考资料
+* Go-gRPC 实践指南 https://www.bookstack.cn/read/go-grpc/summary.md
 * protobuff资料 https://developers.google.com/protocol-buffers/
 * Protobuf语法 https://segmentfault.com/a/1190000007917576
 
