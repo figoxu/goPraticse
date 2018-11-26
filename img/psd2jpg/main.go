@@ -38,18 +38,22 @@ func processImg(dir string) {
 		name := info.Name()
 		if strings.Index(name, ".psd") != -1 && strings.Index(name, ".jpg") == -1 {
 			outfileName := fmt.Sprint(path, ".jpg")
-			from:=Figo.NewFilePath(path).UnixPath()
-			to:=Figo.NewFilePath(outfileName).UnixPath()
-			system(from,to)
+			from := Figo.NewFilePath(path).UnixPath()
+			outFilePath := Figo.NewFilePath(outfileName)
+			if outFilePath.Exist() {
+				return nil
+			}
+			to := outFilePath.UnixPath()
+			system(from, to)
 		}
 		return nil
 	})
 }
 
-func system(from ,to  string) string {
+func system(from, to string) string {
 	defer Figo.Catch()
-	log.Println("convert "," -layers"," flatten ",from," ",to)
-	cmd := exec.Command("convert","-layers","flatten",from,to)
+	log.Println("convert ", " -layers", " flatten ", from, " ", to)
+	cmd := exec.Command("convert", "-layers", "flatten", from, to)
 	var out bytes.Buffer //缓冲字节
 	cmd.Stdout = &out    //标准输出
 	err := cmd.Run()     //运行指令 ，做判断
