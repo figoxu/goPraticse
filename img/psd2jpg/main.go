@@ -17,16 +17,17 @@ func main() {
 	log.Println("本程序由Figo开发")
 	log.Println("依赖外部库：ftp://ftp.imagemagick.org/pub/ImageMagick/binaries ")
 	log.Println("请执行确定下载")
-	for {
+	handleImg := func(dir string) {
+
 		log.Println("Ctrl+C 或 关闭命令窗口 即可")
-		log.Println("请输入需要处理的目录:")
-		var dir string
-		fmt.Scanln(&dir)
 		log.Println("准备处理目录:", dir)
 		time.Sleep(time.Second * time.Duration(2))
 		processImg(dir)
 		log.Println("本批次处理结束")
 	}
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	utee.Chk(err)
+	handleImg(dir)
 	fmt.Println("欢迎下次使用")
 }
 
