@@ -37,7 +37,7 @@ func processImg(dir string) {
 			return nil
 		}
 		name := info.Name()
-		if strings.Index(name, ".psd") != -1 && strings.Index(name, ".jpg") == -1 {
+		if strings.Index(strings.ToLower(name), ".psd") != -1  && strings.Index(name, ".jpg") == -1 {
 			outfileName := fmt.Sprint(path, ".jpg")
 			from := Figo.NewFilePath(path).UnixPath()
 			outFilePath := Figo.NewFilePath(outfileName)
