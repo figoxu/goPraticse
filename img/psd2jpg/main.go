@@ -54,7 +54,7 @@ func processImg(dir string) {
 func system(from, to string) string {
 	defer Figo.Catch()
 	log.Println("convert ", " -layers", " flatten ", from, " ", to)
-	cmd := exec.Command("convert", "-layers", "flatten", from, to)
+	cmd := exec.Command("convert", "-layers", "coalesce","-delete","1--1", from, to)
 	var out bytes.Buffer //缓冲字节
 	cmd.Stdout = &out    //标准输出
 	err := cmd.Run()     //运行指令 ，做判断
