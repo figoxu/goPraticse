@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "github.com/figoxu/goPraticse/3rd/grpc/m"
+	pb "github.com/figoxu/goPraticse/3rd/grpc/common/m"
 	"context"
 	"fmt"
 	"net"

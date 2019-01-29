@@ -3,7 +3,7 @@ package main
 import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
-	pb "github.com/figoxu/goPraticse/3rd/grpc/m"
+	pb "github.com/figoxu/goPraticse/3rd/grpc/common/m"
 	"context"
 	"log"
 )
