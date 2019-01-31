@@ -7,43 +7,26 @@ import (
 )
 
 type ExcelWriter struct {
-	file  *xlsx.File
-	sheet *xlsx.Sheet
-	w     io.Writer
+	file  *xlsx.StreamFile
 }
 
 func NewExcelWriter(w io.Writer) *ExcelWriter {
-	xw := &ExcelWriter{
-		file: xlsx.NewFile(),
-		w:    w,
-	}
-	sheet, err := xw.file.AddSheet("Sheet1")
+	builder := xlsx.NewStreamFileBuilder(w)
+	builder.AddSheet("Sheet1", []string{}, []*xlsx.CellType{})
+	file, err := builder.Build()
 	utee.Chk(err)
-	xw.sheet = sheet
-
+	xw := &ExcelWriter{
+		file: file,
+	}
 	return xw
 }
 
 func (p *ExcelWriter) Write(record []string) {
-	row := p.sheet.AddRow()
-	for _, s := range record {
-		cell := row.AddCell()
-		cell.Value = s
-	}
+	err:=p.file.Write(record)
+	utee.Chk(err)
 }
 
 func (p *ExcelWriter) Flush() error {
-	return p.file.Write(p.w)
+	p.file.Flush()
+	return nil
 }
-
-func (p *ExcelWriter) WriteWithMergeCell(record []string, indexToMerge []int, hcells, vcells int) {
-	row := p.sheet.AddRow()
-	for i, s := range record {
-		cell := row.AddCell()
-		if utee.ContainsInt(indexToMerge, i) && (hcells > 0 || vcells > 0) {
-			cell.Merge(hcells, vcells)
-		}
-		cell.Value = s
-	}
-}
-

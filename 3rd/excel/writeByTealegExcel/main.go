@@ -2,9 +2,10 @@ package main
 
 import (
 	"51baibao.com/meishi/ut"
-	"bytes"
 	"fmt"
 	"github.com/icrowley/fake"
+	"github.com/quexer/utee"
+	"os"
 
 	//"github.com/quexer/utee"
 	"log"
@@ -13,21 +14,14 @@ import (
 
 func main() {
 	log.Println("hello")
-
-	//fileBuffer
-	//file, err := os.OpenFile("file.xlsx", os.O_CREATE|os.O_WRONLY, 0600)
-	//utee.Chk(err)
-	//writer := ut.NewExcelWriter(file)
-
-
-	//ioBuffer
-	buffer := bytes.NewBuffer(make([]byte, 0))
-	writer := ut.NewExcelWriter(buffer)
+	file, err := os.OpenFile("file.xlsx", os.O_CREATE|os.O_WRONLY, 0600)
+	utee.Chk(err)
+	writer := ut.NewExcelWriter(file)
 
 	recordKey := []string{"编号", "姓名", "语言", "所在地"}
 	writer.Write(recordKey)
 
-	for i := 0; i < 10000*10000; i++ {
+	for i := 0; i < 100*10000; i++ {
 		writer.Write([]string{
 			fmt.Sprint(i),
 			fake.FullName(),
