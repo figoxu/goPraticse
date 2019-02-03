@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
+	"github.com/icrowley/fake"
 	"os"
 )
 
@@ -13,11 +15,20 @@ func main() {
 	defer f.Close()
 	f.WriteString("\xEF\xBB\xBF") // 写入UTF-8 BOM
 	w := csv.NewWriter(f)
-	w.Write([]string{"编号", "姓名", "年龄"})
-	w.Write([]string{"1", "张三", "23"})
-	w.Write([]string{"2", "李四", "24"})
-	w.Flush()
-	w.Write([]string{"3", "王五", "25"})
-	w.Write([]string{"4", "赵六", "26"})
+	w.Write([]string{"编号", "姓名", "语言", "所在地"})
+
+	for i := 0; i < 100*10000; i++ {
+		w.Write([]string{
+			fmt.Sprint(i),
+			fake.FullName(),
+			fake.Language(),
+			fake.City(),
+		})
+		if i%10000 == 0 {
+			fmt.Println("Handle @i:", i)
+			fmt.Println("Flush @i:",i)
+			w.Flush()
+		}
+	}
 	w.Flush()
 }
