@@ -6,6 +6,7 @@ type User struct {
 	gorm.Model
 	Name       string
 	CreditCard CreditCard
+	Emails     []Email
 }
 
 type UserDao struct {
@@ -24,6 +25,6 @@ func (p *UserDao) Insert(user *User) {
 
 func (p *UserDao) GetById(id int) *User {
 	user := &User{}
-	p.db.Where("id=?", id).Preload("CreditCard").Find(user)
+	p.db.Where("id=?", id).Preload("CreditCard").Preload("Emails").Find(user)
 	return user
 }
