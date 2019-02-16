@@ -19,6 +19,6 @@ func init() {
 	pgdb.SetLogger(&Figo.GormLog{})
 	utee.Chk(err)
 	pgdb.LogMode(true)
-	pgdb.Debug().AutoMigrate(&User{}, &CreditCard{}, &Email{})
+	pgdb.Debug().AutoMigrate(&User{}, &CreditCard{}, &Email{}, &Language{}, &UserLanguage{})
 	env.db = pgdb
 }
