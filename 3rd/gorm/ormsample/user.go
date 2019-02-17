@@ -8,6 +8,7 @@ type User struct {
 	CreditCard CreditCard
 	Emails     []Email
 	Languages  []Language `gorm:"many2many:user_languages;"`
+	Friends    []*User     `gorm:"many2many:UserFriends;association_jointable_foreignkey:friend_id"`
 }
 
 type UserDao struct {
@@ -26,6 +27,6 @@ func (p *UserDao) Insert(user *User) {
 
 func (p *UserDao) GetById(id int) *User {
 	user := &User{}
-	p.db.Where("id=?", id).Preload("CreditCard").Preload("Emails").Preload("Languages").Find(user)
+	p.db.Where("id=?", id).Preload("CreditCard").Preload("Emails").Preload("Languages").Preload("Friends").Find(user)
 	return user
 }
