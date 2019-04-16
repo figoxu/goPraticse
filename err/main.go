@@ -1,12 +1,15 @@
 package main
+
 import (
+	"errors"
+	"github.com/figoxu/goPraticse/err/a"
 	"log"
-	"github.com/gogap/errors"
 )
 
-func main(){
+func main() {
 	log.Println("hello")
-	e:=errors.New("test")
+	e := errors.New("test")
 	log.Println(e.Error())
-	log.Println(e.Error()=="test")
+	log.Println(e.Error() == "test")
+	a.TMethod()
 }
