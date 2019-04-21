@@ -8,7 +8,56 @@ import (
 )
 
 func main() {
+	myDemo()
+	fieldValues()
 	sampleDemo()
+}
+
+func myDemo() {
+	user := User{}
+	user.Id = 12
+	user.Name = "figo"
+	fmt.Println(user.Base.Id)
+
+	fmt.Println("%T", user)
+	fmt.Println("%T", &user)
+	fmt.Println("%T", &user)
+	tp := reflect.TypeOf(user)
+	fmt.Printf(" %v   %v \n", tp, tp.Kind())
+	//tp = reflect.TypeOf(&user)
+	//fmt.Printf(" %v   %v \n", tp, tp.Kind())
+	idField, _ := tp.FieldByName("Base")
+	sbtp := idField.Type
+	fmt.Printf(" %v   %v \n", sbtp, sbtp.Kind())
+
+	reflect.ValueOf(idField)
+	//base:=idField.(*Base)
+
+	val := reflect.ValueOf(&user).Elem()
+	base := val.FieldByName("Base").Interface().(Base)
+	fmt.Println(base.Id)
+}
+
+func fieldValues() {
+	type Foo struct {
+		FirstName string `tag_name:"tag 1"`
+		LastName  string `tag_name:"tag 2"`
+		Age       int    `tag_name:"tag 3"`
+	}
+	f := &Foo{
+		FirstName: "Drew",
+		LastName:  "Olson",
+		Age:       30,
+	}
+	val := reflect.ValueOf(f).Elem()
+
+	for i := 0; i < val.NumField(); i++ {
+		valueField := val.Field(i)
+		typeField := val.Type().Field(i)
+		tag := typeField.Tag
+
+		fmt.Printf("Field Name: %s,\t Field Value: %v,\t Tag Value: %s\n", typeField.Name, valueField.Interface(), tag.Get("tag_name"))
+	}
 }
 
 func sampleDemo() {
@@ -58,4 +107,13 @@ func sampleDemo() {
 	// sort tags according to keys
 	sort.Sort(tags)
 	fmt.Println(tags) // Output: hcl:"foo,squash" json:"foo_bar" xml:"foo"
+}
+
+type Base struct {
+	Id int
+}
+
+type User struct {
+	Base
+	Name string
 }
