@@ -34,3 +34,12 @@ func TestUserDao_Ids(t *testing.T) {
 		fmt.Println(id)
 	}
 }
+
+func TestUserDao_UpdateFids(t *testing.T){
+	userDao := NewUserDao(env.db)
+	user := userDao.GetById(1)
+	user.Fids = NewIntArray(1,2)
+	env.db.Debug().Model(&user).Select("fids").Update(user)
+	user = userDao.GetById(1)
+	Figo.PrintJson("fids  ",user.Fids)
+}

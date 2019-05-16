@@ -1,6 +1,8 @@
 package ormsample
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -8,7 +10,8 @@ type User struct {
 	CreditCard CreditCard
 	Emails     []Email
 	Languages  []Language `gorm:"many2many:user_languages;"`
-	Friends    []*User     `gorm:"many2many:UserFriends;association_jointable_foreignkey:friend_id"`
+	Friends    []*User    `gorm:"many2many:UserFriends;association_jointable_foreignkey:friend_id"`
+	Fids       IntArray   `gorm:"type:integer[]"`
 }
 
 type UserDao struct {
