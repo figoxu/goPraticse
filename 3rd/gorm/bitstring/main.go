@@ -30,12 +30,26 @@ func init() {
 }
 
 func main() {
+	write()
+}
 
+func write() {
+	info := &BitInfo{
+		BitData: &BitString{
+			Bm: roaring.NewBitmap(),
+		},
+	}
+	bitmap := info.BitData.Bm
+	bitmap.Add(1)
+	bitmap.Add(3)
+	bitmap.Add(5)
+	bitmap.Add(7)
+	env.db.Save(&info)
 }
 
 type BitInfo struct {
 	ID      int
-	BitData BitString `gorm:"type:BIT VARYING(10000000);"`
+	BitData *BitString `gorm:"type:BIT VARYING(10000000);"`
 }
 
 type BitString struct {
@@ -49,8 +63,12 @@ func (p *BitString) Scan(src interface{}) error {
 }
 
 func (p *BitString) Value() (driver.Value, error) {
+	return p.String(), nil
+}
+
+func (p *BitString) String() string {
 	query := linq.From(p.Bm.ToArray())
-	sb := bytes.NewBufferString("B'")
+	sb := bytes.NewBufferString(``)
 	for i := 0; i < int(p.Bm.Maximum()); i++ {
 		existFlag := query.Contains(uint32(i))
 		v := "0"
@@ -59,6 +77,7 @@ func (p *BitString) Value() (driver.Value, error) {
 		}
 		sb.WriteString(v)
 	}
-	sb.WriteString("'")
-	return sb.String(), nil
+	v := sb.String()
+	logrus.Println(v)
+	return v
 }
