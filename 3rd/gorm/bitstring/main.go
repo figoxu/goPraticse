@@ -31,6 +31,7 @@ func init() {
 
 func main() {
 	write()
+	read(1)
 }
 
 func write() {
@@ -47,6 +48,16 @@ func write() {
 	env.db.Save(&info)
 }
 
+func read(id int) {
+	var info BitInfo
+	err := env.db.Raw(`select * from bit_infos where id=?`, id).
+		Scan(&info).Error
+	if err != nil {
+		panic(err)
+	}
+	logrus.WithField("info", info).Println("done")
+}
+
 type BitInfo struct {
 	ID      int
 	BitData *BitString `gorm:"type:BIT VARYING(10000000);"`
@@ -57,19 +68,24 @@ type BitString struct {
 }
 
 func (p *BitString) Scan(src interface{}) error {
-	logrus.WithField("src", src).
+	bs := src.([]byte)
+	logrus.WithField("src", string(bs)).
 		Println("done")
+
+	p.Bm = roaring.NewBitmap()
+	for i, v := range bs {
+		if v == 49 {
+			p.Bm.Add(uint32(i))
+		}
+	}
+
 	return nil
 }
 
 func (p *BitString) Value() (driver.Value, error) {
-	return p.String(), nil
-}
-
-func (p *BitString) String() string {
 	query := linq.From(p.Bm.ToArray())
 	sb := bytes.NewBufferString(``)
-	for i := 0; i < int(p.Bm.Maximum()); i++ {
+	for i := 0; i <= int(p.Bm.Maximum()); i++ {
 		existFlag := query.Contains(uint32(i))
 		v := "0"
 		if existFlag {
@@ -77,7 +93,5 @@ func (p *BitString) String() string {
 		}
 		sb.WriteString(v)
 	}
-	v := sb.String()
-	logrus.Println(v)
-	return v
+	return sb.String(), nil
 }
