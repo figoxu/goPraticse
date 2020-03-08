@@ -1,7 +1,12 @@
 package main
 
 import (
+	"fmt"
+
+	"github.com/go-playground/locales/zh"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+	zh_translations "github.com/go-playground/validator/v10/translations/zh"
 	"github.com/quexer/utee"
 	"github.com/sirupsen/logrus"
 )
@@ -24,8 +29,15 @@ type Address struct {
 }
 
 func main() {
+	// 中文翻译器
+	zh_ch := zh.New()
+	uni := ut.New(zh_ch)
+	trans, _ := uni.GetTranslator("zh")
 	validate := validator.New()
-	err := validate.RegisterValidation("is-awesome", ValidateAweSome)
+	//验证器注册翻译器
+	err := zh_translations.RegisterDefaultTranslations(validate, trans)
+	utee.Chk(err)
+	err = validate.RegisterValidation("is-awesome", ValidateAweSome)
 	utee.Chk(err)
 	logrus.Println("hello")
 
@@ -45,7 +57,9 @@ func main() {
 		Addresses:      []*Address{address},
 	}
 	err = validate.Struct(v)
-	utee.Chk(err)
+
+	verr := err.(validator.ValidationErrors)
+	fmt.Println(verr.Translate(trans))
 }
 
 func ValidateAweSome(fl validator.FieldLevel) bool {
