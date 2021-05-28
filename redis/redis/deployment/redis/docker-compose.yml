@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    container_name: my_redis
+    command: redis-server --requirepass 123123
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data:/data
