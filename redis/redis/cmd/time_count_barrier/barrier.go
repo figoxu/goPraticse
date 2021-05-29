@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"figoxu.me/redis/pkg/ut"
 	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
 
@@ -13,6 +14,21 @@ import (
 type Barrier interface {
 	Acquire() (bool, error)
 	SlotLeft() (int, error)
+}
+
+func NewBarrier(Redis *redis.Redis, Bucket string, Duration, Slot int) Barrier {
+	barrier := &TimeCountBarrier{
+		Redis:    Redis,
+		Bucket:   Bucket,
+		Duration: Duration,
+		Slot:     Slot,
+	}
+	go func() {
+		defer ut.Recovery()
+		time.Sleep(time.Minute)
+		barrier.Clean()
+	}()
+	return barrier
 }
 
 type TimeCountBarrier struct {
@@ -42,7 +58,7 @@ func (p *TimeCountBarrier) tryLock(times int, gapDuration time.Duration) (*redis
 }
 
 func (p *TimeCountBarrier) Acquire() (bool, error) {
-	redisLock, err := p.tryLock(10, time.Second)
+	redisLock, err := p.tryLock(1000, time.Millisecond)
 	if err != nil {
 		return false, err
 	}

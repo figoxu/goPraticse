@@ -3,6 +3,7 @@ package ut
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -18,4 +19,14 @@ func HasErrFeature(err error, features ...string) bool {
 	}
 	v := err.Error()
 	return HasFeature(v, features...)
+}
+
+func Recovery() {
+	if err := recover(); err != nil {
+		msg := fmt.Sprintf("%+v", err)
+		if v, ok := err.(error); ok && v != nil {
+			msg = fmt.Sprintf("%+v", errors.WithStack(v))
+		}
+		logrus.WithField(`error`, msg).Println(`panic for recovery`)
+	}
 }

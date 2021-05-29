@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	logrus.SetFormatter(&logrus.TextFormatter{FullTimestamp: true})
 	keyName := "hello" + uuid.New()
 	var wg sync.WaitGroup
 	for i := 2; i > 0; i-- {
@@ -22,12 +23,7 @@ func main() {
 
 func run(wg *sync.WaitGroup, keyName string) {
 	defer wg.Done()
-	b := &TimeCountBarrier{
-		Redis:    ds.DefaultRedis(),
-		Bucket:   keyName,
-		Duration: 60,
-		Slot:     10,
-	}
+	b := NewBarrier(ds.DefaultRedis(), keyName, 60, 10)
 	for i := 0; i < 20; i++ {
 		acquire, err := b.Acquire()
 		if err == LockIsBusy {
