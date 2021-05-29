@@ -64,11 +64,19 @@ func (p *TimeCountBarrier) Acquire() (bool, error) {
 }
 
 func (p *TimeCountBarrier) SlotLeft() (int, error) {
-	startTick := utee.Tick(time.Now().Add(time.Second * time.Duration(-1*p.Duration)))
 	endTick := utee.Tick()
-	slotUsed, err := p.Redis.Zcount(p.key(), startTick, endTick)
+	slotUsed, err := p.Redis.Zcount(p.key(), p.startTick(), endTick)
 	if err != nil {
 		return 0, err
 	}
 	return p.Slot - slotUsed, nil
+}
+
+func (p *TimeCountBarrier) startTick() int64 {
+	return utee.Tick(time.Now().Add(time.Second * time.Duration(-1*p.Duration)))
+}
+
+func (p *TimeCountBarrier) Clean() error {
+	_, err := p.Redis.Zremrangebyscore(p.key(), 0, p.startTick()-1)
+	return errors.WithStack(err)
 }
