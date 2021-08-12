@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  etcd:
+    image: docker.io/bitnami/etcd:3
+    environment:
+      - "ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379"
+      - "ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379"
+      - "ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380"
+      - "ETCD_INITIAL_ADVERTISE_PEER_URLS=http://0.0.0.0:2380"
+      - "ALLOW_NONE_AUTHENTICATION=yes"
+      - "ETCD_INITIAL_CLUSTER=node1=http://0.0.0.0:2380"
+      - "ETCD_NAME=node1"
+      - "ETCD_DATA_DIR=/opt/bitnami/etcd/data"
+    network_mode: host
+    volumes:
+      - ./etcd_data:/bitnami/etcd
