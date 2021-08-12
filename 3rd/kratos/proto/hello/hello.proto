@@ -1,0 +1,18 @@
+syntax = "proto3"; // 指定proto版本
+package sample.hello; // 指定包名
+
+
+option go_package = "proto/hello";
+
+
+service Foo {
+  rpc Bar(HelloReq) returns (WorldRsp);
+}
+
+message HelloReq {
+  string content = 1;
+}
+
+message WorldRsp {
+  string content = 2;
+}
