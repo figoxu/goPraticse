@@ -9,6 +9,7 @@ require (
 )
 
 require (
+	github.com/easierway/rule-engine v0.0.0-20190604112326-d3c16f522fcc // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
