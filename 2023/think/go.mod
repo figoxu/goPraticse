@@ -3,6 +3,7 @@ module figoxu/think
 go 1.19
 
 require (
+	github.com/easierway/concurrency_utils v0.9.2
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.10.1
 )
