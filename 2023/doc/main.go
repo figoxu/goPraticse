@@ -15,9 +15,27 @@ func main() {
 	}
 
 	rowspanHtml := `
-<html lang="en"><head><meta charSet="utf-8"/></head>
+<html lang="en">
+<head>
+    <meta charSet="utf-8"/>
+    <style >
+        table{
+            border: 1px solid #000;
+
+        }
+        td{
+            border: 1px solid #000;
+
+        }
+        tr{
+            border: 1px solid #000;
+
+        }
+
+    </style>
+</head>
 <body>
-<table style="border-color:red;border-style:solid;">
+<table >
     <tr>
         <td>类别</td>
         <td>名称</td>
