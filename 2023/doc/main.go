@@ -13,6 +13,34 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	rowspanHtml := `
+<html lang="en"><head><meta charSet="utf-8"/></head>
+<body>
+<table style="border-color:red;border-style:solid;">
+    <tr>
+        <td>类别</td>
+        <td>名称</td>
+    </tr>
+    <tr>
+        <td rowspan="2">颜色</td>
+        <td>红色</td>
+    </tr>
+    <tr>
+        <td>黄色</td>
+    </tr>
+    <tr>
+        <td colspan="2">姓氏</td>
+    </tr>
+    <tr>
+        <td>王</td>
+        <td>张</td>
+    </tr>
+</table></body></html>`
+	err = html2jpg(rowspanHtml, "/Users/xujianhui/mobvista/mtg/github/goPraticse/2023/doc/b.jpg")
+	if err != nil {
+		panic(err)
+	}
 }
 
 func md2html(body string) string {
