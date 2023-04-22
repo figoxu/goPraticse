@@ -37,8 +37,8 @@ func (p *MockWriter) Write(count int) error {
 }
 
 type Person struct {
-	Name string
-	Age  int
+	Name string `json:"name"`
+	Age  int    `json:"age"`
 }
 
 func (p *MockWriter) mock() *Person {
