@@ -1,0 +1,59 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+
+	"go.mongodb.org/mongo-driver/bson"
+)
+
+func main() {
+	// 打开BSON文件
+	file, err := os.Open("data.bson")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	// 创建BSON解码器
+	decoder := bson.NewDecoder(bufio.NewReader(file))
+
+	// 定义每个分段的大小
+	chunkSize := 10 * 1024 * 1024 // 10 MB
+
+	// 分段读取BSON文档
+	var docs []bson.M
+	for {
+		// 读取下一个分段
+		chunk := make([]byte, chunkSize)
+		_, err := file.Read(chunk)
+		if err != nil {
+			if err.Error() == "EOF" {
+				break
+			} else {
+				panic(err)
+			}
+		}
+
+		// 解码分段中的所有文档
+		for len(chunk) > 0 {
+			var doc bson.M
+			remaining, err := decoder.DecodeBytes(chunk, &doc)
+			if err != nil {
+				panic(err)
+			}
+
+			// 将解码完的文档添加到列表中
+			docs = append(docs, doc)
+
+			// 更新剩余的分段数据
+			chunk = remaining
+		}
+	}
+
+	// 处理所有读取的文档，例如将它们插入到MongoDB中
+	for _, doc := range docs {
+		fmt.Println(doc)
+	}
+}
