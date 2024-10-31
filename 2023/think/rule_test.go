@@ -1,4 +1,4 @@
-package think
+package think_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = FDescribe("RuleEngine", func() {
+var _ = Describe("RuleEngine", func() {
 
 	It("Base", func() {
 		type Person struct {
